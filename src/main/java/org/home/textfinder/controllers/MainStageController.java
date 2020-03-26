@@ -1,15 +1,14 @@
 package org.home.textfinder.controllers;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lombok.Getter;
@@ -18,16 +17,23 @@ import org.home.textfinder.api.Observable;
 import org.home.textfinder.api.Observer;
 import org.home.textfinder.config.AppConfig;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 public class MainStageController implements Observable {
-    private List<Observer> observers = new ArrayList<>();
+    private final DirectoryChooser directoryChooser = new DirectoryChooser();
+    private final List<Observer> observers = new ArrayList<>();
     private AppConfig appConfig;
-    @FXML
-    private ResourceBundle resources;
 
     @FXML
-    private URL location;
+    private Button searchButton;
+    @FXML
+    private TextField searchPathTextField;
+
 
     @Override
     public void addObserver(Observer observer) {
@@ -46,13 +52,30 @@ public class MainStageController implements Observable {
 
     @FXML
     void languageMenuEnglishAction(ActionEvent event) {
-        notifyObservers("en");
+        notifyObservers(AppConfig.APP_LOCALE_ENGLISH);
     }
 
     @FXML
     void languageMenuRussianAction(ActionEvent event) {
-        notifyObservers("ru");
+        notifyObservers(AppConfig.APP_LOCALE_RUSSIAN);
     }
+
+
+    @FXML
+    void handleChooseSearchPathAction(MouseEvent event) {
+        File searchPath = directoryChooser.showDialog(appConfig.getPrimaryStage());
+        if (searchPath != null) {
+            searchPathTextField.setText(searchPath.getAbsolutePath());
+            searchButton.setDisable(false);
+        }
+
+    }
+
+    @FXML
+    void handleSearchAction(ActionEvent event) {
+
+    }
+
 
     @FXML
     void showMenuAbout(ActionEvent event) {
@@ -71,6 +94,7 @@ public class MainStageController implements Observable {
             e.printStackTrace();
         }
     }
+
 
     @FXML
     void initialize() {

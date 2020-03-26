@@ -22,7 +22,6 @@ import java.util.ResourceBundle;
 public class TextFinderApp extends Application implements Observer {
     private AppConfig config;
     private AnchorPane currentRootContainer;
-    private Stage primaryStage;
 
     @Override
     public void start(Stage primaryStage) throws IOException {
@@ -31,10 +30,9 @@ public class TextFinderApp extends Application implements Observer {
         currentRootContainer = fxmlLoader.load();
         Scene scene = new Scene(currentRootContainer);
         primaryStage.setScene(scene);
-        this.primaryStage = primaryStage;
 
-        config = new AppConfig(fxmlLoader.getResources());
-        config.applyConfig(primaryStage);
+        config = new AppConfig(fxmlLoader.getResources(), primaryStage);
+        config.initStageParams();
 
         MainStageController controller = fxmlLoader.getController();
         controller.setAppConfig(config);
@@ -55,13 +53,13 @@ public class TextFinderApp extends Application implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(AppConfig.MAIN_STAGE_FXML_PATH));
-        fxmlLoader.setResources(ResourceBundle.getBundle("bundles.locale", new Locale((String) arg)));
+        fxmlLoader.setResources(ResourceBundle.getBundle("bundles.locale", (Locale) arg));
         AnchorPane newNode = fxmlLoader.load();
         MainStageController controller = fxmlLoader.getController();
         currentRootContainer.getChildren().setAll(newNode.getChildren());
 
         config.setBundle(fxmlLoader.getResources());
-        config.initStageParams(primaryStage);
+        config.initStageParams();
 
         controller.setAppConfig(config);
         controller.addObserver(this);

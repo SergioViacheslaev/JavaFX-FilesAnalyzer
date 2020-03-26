@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.layout.AnchorPane?>
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="417.0" prefWidth="631.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.home.textfinder.controllers.MainStageController">
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="541.0" prefWidth="869.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.home.textfinder.controllers.MainStageController">
    <children>
       <MenuBar layoutY="-2.0" prefHeight="26.0" prefWidth="631.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <menus>
@@ -26,5 +26,50 @@
             </Menu>
          </menus>
       </MenuBar>
+      <Text layoutX="13.0" layoutY="50.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Каталог поиска" wrappingWidth="123.13671875">
+         <font>
+            <Font name="Lobster" size="16.0" />
+         </font>
+      </Text>
+      <TextField fx:id="searchPathTextField" focusTraversable="false" layoutX="129.0" layoutY="31.0" onMouseClicked="#handleChooseSearchPathAction" prefHeight="30.0" prefWidth="164.0" promptText="Путь к папке...">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </TextField>
+      <Text layoutX="13.0" layoutY="85.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Расширение файла" wrappingWidth="142.0">
+         <font>
+            <Font name="Lobster" size="16.0" />
+         </font>
+      </Text>
+      <TextField focusTraversable="false" layoutX="150.0" layoutY="65.0" prefHeight="30.0" prefWidth="142.0" promptText=".log">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </TextField>
+      <Text layoutX="71.0" layoutY="183.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Результаты поиска" wrappingWidth="158.0">
+         <font>
+            <Font name="Lobster" size="16.0" />
+         </font>
+      </Text>
+      <TreeView focusTraversable="false" layoutX="12.0" layoutY="192.0" prefHeight="334.0" prefWidth="278.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="192.0" />
+      <Text layoutX="14.0" layoutY="120.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Текст" wrappingWidth="50.0">
+         <font>
+            <Font name="Lobster" size="16.0" />
+         </font>
+      </Text>
+      <TextField focusTraversable="false" layoutX="61.0" layoutY="100.0" prefHeight="30.0" prefWidth="231.0" promptText="что ищем ?">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </TextField>
+      <Button fx:id="searchButton" disable="true" focusTraversable="false" layoutX="300.0" layoutY="31.0" mnemonicParsing="false" onAction="#handleSearchAction" prefHeight="51.0" prefWidth="64.0">
+         <graphic>
+            <ImageView fitHeight="51.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/searchButton.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
    </children>
 </AnchorPane>
