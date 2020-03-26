@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="417.0" prefWidth="631.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.home.textfinder.controllers.MainStageController">
+   <children>
+      <MenuBar layoutY="-2.0" prefHeight="26.0" prefWidth="631.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <menus>
+            <Menu mnemonicParsing="false" text="%menu.settings">
+               <items>
+                  <Menu mnemonicParsing="false" text="%menu.language">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#languageMenuEnglishAction" text="%language.en" />
+                        <MenuItem mnemonicParsing="false" onAction="#languageMenuRussianAction" text="%language.ru" />
+                     </items>
+                  </Menu>
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="%menu.help">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#showMenuAbout" text="%menu.about" />
+               </items>
+            </Menu>
+         </menus>
+      </MenuBar>
+   </children>
+</AnchorPane>
