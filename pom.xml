@@ -45,7 +45,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.1</version>
                 <configuration>
-                    <mainClass>org.home.textfinder.TextFinderApp</mainClass>
+                    <mainClass>org.home.textfinder.Main</mainClass>
                 </configuration>
             </plugin>
             <plugin>
