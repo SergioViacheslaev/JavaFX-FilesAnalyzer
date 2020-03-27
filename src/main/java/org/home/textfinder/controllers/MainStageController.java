@@ -5,10 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
@@ -19,6 +16,7 @@ import lombok.SneakyThrows;
 import org.home.textfinder.api.Observable;
 import org.home.textfinder.api.Observer;
 import org.home.textfinder.config.AppConfig;
+import org.home.textfinder.utils.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,6 +40,8 @@ public class MainStageController implements Observable {
     private TextField searchPathTextField;
     @FXML
     private TreeView<String> searchResultTree;
+    @FXML
+    private TextArea fileContentTextArea;
 
 
     @Override
@@ -92,6 +92,21 @@ public class MainStageController implements Observable {
 
     }
 
+    @FXML
+    void handleMouseClickedTreeItemAction(MouseEvent event) {
+        final TreeItem<String> selectedItem = searchResultTree.getSelectionModel().getSelectedItem();
+        final String filePath = selectedItem.getValue();
+
+        if (Files.isRegularFile(Paths.get(filePath))) {
+            String fileContent = FileUtils.getFileContent(filePath);
+            if (!fileContent.isEmpty()) {
+                fileContentTextArea.setText(fileContent);
+            } else {
+                fileContentTextArea.setText("Данный файл пуст !");
+            }
+        }
+    }
+
     @SneakyThrows
     private void buildFileTree(TreeItem<String> rootItem) {
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(rootItem.getValue()))) {
@@ -132,8 +147,6 @@ public class MainStageController implements Observable {
 
     @FXML
     void initialize() {
-        searchButton.setDisable(false);
+
     }
-
-
 }
