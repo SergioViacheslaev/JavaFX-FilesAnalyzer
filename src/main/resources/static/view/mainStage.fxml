@@ -46,12 +46,11 @@
             <Font size="14.0" />
          </font>
       </TextField>
-      <Text layoutX="71.0" layoutY="183.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Результаты поиска" wrappingWidth="158.0">
+      <Text layoutX="71.0" layoutY="179.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Результаты поиска" wrappingWidth="158.0" AnchorPane.leftAnchor="71.0" AnchorPane.rightAnchor="640.0">
          <font>
             <Font name="Lobster" size="16.0" />
          </font>
       </Text>
-      <TreeView focusTraversable="false" layoutX="12.0" layoutY="192.0" prefHeight="334.0" prefWidth="278.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="192.0" />
       <Text layoutX="14.0" layoutY="120.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Текст" wrappingWidth="50.0">
          <font>
             <Font name="Lobster" size="16.0" />
@@ -71,5 +70,19 @@
             </ImageView>
          </graphic>
       </Button>
+      <SplitPane dividerPositions="0.28975265017667845" layoutX="5.0" layoutY="197.0" prefHeight="332.0" prefWidth="851.0" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="197.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <TreeView fx:id="searchResultTree" layoutX="3.0" layoutY="4.0" prefHeight="321.0" prefWidth="237.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="4.0" />
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <TextArea layoutY="-2.0" prefHeight="330.0" prefWidth="600.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-2.0" />
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
    </children>
 </AnchorPane>

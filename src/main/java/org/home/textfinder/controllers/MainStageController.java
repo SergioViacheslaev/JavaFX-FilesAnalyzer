@@ -7,18 +7,25 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import org.home.textfinder.api.Observable;
 import org.home.textfinder.api.Observer;
 import org.home.textfinder.config.AppConfig;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +40,8 @@ public class MainStageController implements Observable {
     private Button searchButton;
     @FXML
     private TextField searchPathTextField;
+    @FXML
+    private TreeView<String> searchResultTree;
 
 
     @Override
@@ -73,7 +82,32 @@ public class MainStageController implements Observable {
 
     @FXML
     void handleSearchAction(ActionEvent event) {
+        String searchPath = searchPathTextField.getText();
+        if (!searchPath.isEmpty()) {
+            TreeItem<String> root = new TreeItem<>(searchPath);
+            root.setExpanded(true);
+            searchResultTree.setRoot(root);
+            buildFileTree(root);
+        }
 
+    }
+
+    @SneakyThrows
+    private void buildFileTree(TreeItem<String> rootItem) {
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(rootItem.getValue()))) {
+
+            for (Path path : directoryStream) {
+                TreeItem<String> treeItem = new TreeItem<>(path.toString());
+                treeItem.setExpanded(true);
+
+                rootItem.getChildren().add(treeItem);
+
+                if (Files.isDirectory(path)) {
+                    buildFileTree(treeItem);
+                }
+
+            }
+        }
     }
 
 
@@ -98,7 +132,7 @@ public class MainStageController implements Observable {
 
     @FXML
     void initialize() {
-
+        searchButton.setDisable(false);
     }
 
 
