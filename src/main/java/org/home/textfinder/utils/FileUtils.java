@@ -14,6 +14,7 @@ public class FileUtils {
 
     @SneakyThrows
     public static String getFileContent(String filePath) {
+
         final List<String> contentStrings = Files.readAllLines(Paths.get(filePath), StandardCharsets.UTF_8);
         if (!contentStrings.isEmpty()) {
             return String.join("\n", contentStrings);

@@ -36,6 +36,7 @@ public class TextFinderApp extends Application implements Observer {
 
         MainStageController controller = fxmlLoader.getController();
         controller.setAppConfig(config);
+        controller.setBundle(fxmlLoader.getResources());
         controller.addObserver(this);
 
         primaryStage.show();
@@ -44,11 +45,11 @@ public class TextFinderApp extends Application implements Observer {
 
     /**
      * Invokes when user changes language.
+     * Loading new scene-node with updated language from bundles.
      *
      * @param o
      * @param arg
      */
-
     @SneakyThrows
     @Override
     public void update(Observable o, Object arg) {
@@ -62,6 +63,7 @@ public class TextFinderApp extends Application implements Observer {
         config.initStageParams();
 
         controller.setAppConfig(config);
+        controller.setBundle(fxmlLoader.getResources());
         controller.addObserver(this);
     }
 

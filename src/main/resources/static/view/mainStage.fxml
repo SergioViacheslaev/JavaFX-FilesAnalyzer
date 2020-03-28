@@ -5,7 +5,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="541.0" prefWidth="869.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.home.textfinder.controllers.MainStageController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="625.0" prefWidth="932.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.home.textfinder.controllers.MainStageController">
    <children>
       <MenuBar layoutY="-2.0" prefHeight="26.0" prefWidth="631.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <menus>
@@ -26,42 +26,42 @@
             </Menu>
          </menus>
       </MenuBar>
-      <Text layoutX="13.0" layoutY="50.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Каталог поиска" wrappingWidth="123.13671875">
+      <Text layoutX="13.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Каталог поиска" wrappingWidth="123.13671875">
          <font>
             <Font name="Lobster" size="16.0" />
          </font>
       </Text>
-      <TextField fx:id="searchPathTextField" focusTraversable="false" layoutX="129.0" layoutY="31.0" onMouseClicked="#handleChooseSearchPathAction" prefHeight="30.0" prefWidth="164.0" promptText="Путь к папке...">
+      <TextField fx:id="searchPathTextField" focusTraversable="false" layoutX="129.0" layoutY="37.0" onMouseClicked="#handleChooseSearchPathAction" prefHeight="30.0" prefWidth="164.0" promptText="Путь к папке...">
          <font>
             <Font size="14.0" />
          </font>
       </TextField>
-      <Text layoutX="13.0" layoutY="85.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Расширение файла" wrappingWidth="142.0">
+      <Text layoutX="13.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Расширение файла" wrappingWidth="142.0">
          <font>
             <Font name="Lobster" size="16.0" />
          </font>
       </Text>
-      <TextField focusTraversable="false" layoutX="150.0" layoutY="65.0" prefHeight="30.0" prefWidth="142.0" promptText=".log">
+      <TextField fx:id="fileExtensionTextField" focusTraversable="false" layoutX="150.0" layoutY="72.0" prefHeight="30.0" prefWidth="142.0" promptText=".log">
          <font>
             <Font size="14.0" />
          </font>
       </TextField>
-      <Text layoutX="71.0" layoutY="179.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Результаты поиска" wrappingWidth="158.0" AnchorPane.leftAnchor="71.0" AnchorPane.rightAnchor="640.0">
+      <Text layoutX="71.0" layoutY="230.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Результаты поиска" wrappingWidth="158.0" AnchorPane.leftAnchor="71.0" AnchorPane.rightAnchor="703.0">
          <font>
             <Font name="Lobster" size="16.0" />
          </font>
       </Text>
-      <Text layoutX="14.0" layoutY="120.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Текст" wrappingWidth="50.0">
+      <Text layoutX="14.0" layoutY="129.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Текст" wrappingWidth="50.0">
          <font>
             <Font name="Lobster" size="16.0" />
          </font>
       </Text>
-      <TextField focusTraversable="false" layoutX="61.0" layoutY="100.0" prefHeight="30.0" prefWidth="231.0" promptText="что ищем ?">
+      <TextField fx:id="fileContentSearchTextField" focusTraversable="false" layoutX="60.0" layoutY="111.0" prefHeight="30.0" prefWidth="231.0" promptText="что ищем ?">
          <font>
             <Font size="14.0" />
          </font>
       </TextField>
-      <Button fx:id="searchButton" disable="true" focusTraversable="false" layoutX="300.0" layoutY="31.0" mnemonicParsing="false" onAction="#handleSearchAction" prefHeight="51.0" prefWidth="64.0">
+      <Button fx:id="searchButton" disable="true" focusTraversable="false" layoutX="305.0" layoutY="37.0" mnemonicParsing="false" onAction="#handleSearchAction" prefHeight="51.0" prefWidth="64.0">
          <graphic>
             <ImageView fitHeight="51.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -70,7 +70,7 @@
             </ImageView>
          </graphic>
       </Button>
-      <SplitPane dividerPositions="0.28975265017667845" layoutX="5.0" layoutY="197.0" prefHeight="332.0" prefWidth="851.0" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="197.0">
+      <SplitPane dividerPositions="0.28975265017667845" layoutX="5.0" layoutY="239.0" prefHeight="374.0" prefWidth="914.0" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="239.0">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
@@ -84,5 +84,16 @@
             </AnchorPane>
         </items>
       </SplitPane>
+      <Text layoutX="12.0" layoutY="168.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Маска файла" wrappingWidth="142.0">
+         <font>
+            <Font name="Lobster" size="16.0" />
+         </font>
+      </Text>
+      <TextField fx:id="fileMaskTextField" disable="true" focusTraversable="false" layoutX="112.0" layoutY="148.0" prefHeight="30.0" prefWidth="179.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </TextField>
+      <RadioButton fx:id="enableFileMaskRadioButton" layoutX="416.0" layoutY="38.0" mnemonicParsing="false" onAction="#handleFileMaskSearchAction" prefHeight="17.0" prefWidth="164.0" text="Включить поиск по маске" />
    </children>
 </AnchorPane>
