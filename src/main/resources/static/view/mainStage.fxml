@@ -26,42 +26,32 @@
             </Menu>
          </menus>
       </MenuBar>
-      <Text layoutX="13.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Каталог поиска" wrappingWidth="123.13671875">
-         <font>
-            <Font name="Lobster" size="16.0" />
-         </font>
-      </Text>
-      <TextField fx:id="searchPathTextField" focusTraversable="false" layoutX="129.0" layoutY="37.0" onMouseClicked="#handleChooseSearchPathAction" prefHeight="30.0" prefWidth="164.0" promptText="Путь к папке...">
+      <TextField fx:id="searchPathTextField" focusTraversable="false" layoutX="144.0" layoutY="37.0" onMouseClicked="#handleChooseSearchPathAction" prefHeight="30.0" prefWidth="177.0" promptText="Путь к папке...">
          <font>
             <Font size="14.0" />
          </font>
       </TextField>
-      <Text layoutX="13.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Расширение файла" wrappingWidth="142.0">
+      <Text layoutX="12.0" layoutY="92.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text-labels" text="Расширение файла" wrappingWidth="170.0">
          <font>
-            <Font name="Lobster" size="16.0" />
+            <Font name="Aver" size="16.0" />
          </font>
       </Text>
-      <TextField fx:id="fileExtensionTextField" focusTraversable="false" layoutX="150.0" layoutY="72.0" prefHeight="30.0" prefWidth="142.0" promptText=".log">
+      <TextField fx:id="fileExtensionTextField" focusTraversable="false" layoutX="162.0" layoutY="72.0" prefHeight="30.0" prefWidth="158.0" promptText=".log">
          <font>
             <Font size="14.0" />
          </font>
       </TextField>
-      <Text layoutX="71.0" layoutY="230.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Результаты поиска" wrappingWidth="158.0" AnchorPane.leftAnchor="71.0" AnchorPane.rightAnchor="703.0">
+      <Text layoutX="60.0" layoutY="247.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text-labels" text="Результаты поиска" wrappingWidth="158.0" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="714.0">
          <font>
-            <Font name="Lobster" size="16.0" />
+            <Font name="Aver" size="16.0" />
          </font>
       </Text>
-      <Text layoutX="14.0" layoutY="129.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Текст" wrappingWidth="50.0">
-         <font>
-            <Font name="Lobster" size="16.0" />
-         </font>
-      </Text>
-      <TextField fx:id="fileContentSearchTextField" focusTraversable="false" layoutX="60.0" layoutY="111.0" prefHeight="30.0" prefWidth="231.0" promptText="что ищем ?">
+      <TextField fx:id="fileContentSearchTextField" focusTraversable="false" layoutX="66.0" layoutY="111.0" prefHeight="30.0" prefWidth="255.0" promptText="что ищем ?">
          <font>
             <Font size="14.0" />
          </font>
       </TextField>
-      <Button fx:id="searchButton" disable="true" focusTraversable="false" layoutX="305.0" layoutY="37.0" mnemonicParsing="false" onAction="#handleSearchAction" prefHeight="51.0" prefWidth="64.0">
+      <Button fx:id="searchButton" disable="true" focusTraversable="false" layoutX="330.0" layoutY="38.0" mnemonicParsing="false" onAction="#handleSearchAction" prefHeight="51.0" prefWidth="64.0">
          <graphic>
             <ImageView fitHeight="51.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -70,7 +60,7 @@
             </ImageView>
          </graphic>
       </Button>
-      <SplitPane dividerPositions="0.28975265017667845" layoutX="5.0" layoutY="239.0" prefHeight="374.0" prefWidth="914.0" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="239.0">
+      <SplitPane dividerPositions="0.28975265017667845" layoutX="5.0" layoutY="259.0" prefHeight="354.0" prefWidth="914.0" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="259.0">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
@@ -84,16 +74,24 @@
             </AnchorPane>
         </items>
       </SplitPane>
-      <Text layoutX="12.0" layoutY="168.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Маска файла" wrappingWidth="142.0">
-         <font>
-            <Font name="Lobster" size="16.0" />
-         </font>
-      </Text>
-      <TextField fx:id="fileMaskTextField" disable="true" focusTraversable="false" layoutX="112.0" layoutY="148.0" prefHeight="30.0" prefWidth="179.0">
+      <TextField fx:id="fileMaskTextField" disable="true" focusTraversable="false" layoutX="12.0" layoutY="173.0" prefHeight="30.0" prefWidth="202.0">
          <font>
             <Font size="14.0" />
          </font>
       </TextField>
-      <RadioButton fx:id="enableFileMaskRadioButton" layoutX="416.0" layoutY="38.0" mnemonicParsing="false" onAction="#handleFileMaskSearchAction" prefHeight="17.0" prefWidth="164.0" text="Включить поиск по маске" />
+      <RadioButton fx:id="enableFileMaskRadioButton" layoutX="12.0" layoutY="151.0" mnemonicParsing="false" onAction="#handleFileMaskSearchAction" prefHeight="19.0" prefWidth="210.0" text="Включить поиск по маске">
+         <font>
+            <Font name="Aver" size="14.0" />
+         </font></RadioButton>
+      <Text layoutX="14.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text-labels" text="Каталог поиска" wrappingWidth="129.0">
+         <font>
+            <Font name="Aver" size="16.0" />
+         </font>
+      </Text>
+      <Text layoutX="14.0" layoutY="130.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text-labels" text="Текст" wrappingWidth="51.0">
+         <font>
+            <Font name="Aver" size="16.0" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>

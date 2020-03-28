@@ -139,12 +139,16 @@ public class MainStageController implements Observable {
         final String filePath = selectedItem.getValue();
 
         if (Files.isRegularFile(Paths.get(filePath))) {
-            String fileContent = FileUtils.getFileContent(filePath);
-            if (!fileContent.isEmpty()) {
-                fileContentTextArea.setText(fileContent);
-            } else {
-                fileContentTextArea.setText("");
-                showInformationAlert(bundle.getString("alert.FileEmpty"));
+            try {
+                String fileContent = FileUtils.getFileContent(filePath);
+                if (!fileContent.isEmpty()) {
+                    fileContentTextArea.setText(fileContent);
+                } else {
+                    fileContentTextArea.setText("");
+                    showInformationAlert(bundle.getString("alert.FileEmpty"));
+                }
+            } catch (IOException e) {
+                DialogWindows.showInformationAlert("Не могу прочитать этот файл !");
             }
         }
     }

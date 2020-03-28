@@ -1,6 +1,7 @@
 package org.home.textfinder.config;
 
 import javafx.scene.image.Image;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,6 +33,8 @@ public class AppConfig {
         primaryStage.setMinWidth(420);
         primaryStage.setMinHeight(450);
         primaryStage.setTitle(bundle.getString("appTitle"));
+        primaryStage.getScene().getStylesheets().add(0, "/static/css/text-labels.css");
+        Font.loadFont(getClass().getResourceAsStream("/static/fonts/aver.ttf"),16);
     }
 
 
