@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
@@ -18,6 +19,7 @@ import org.home.textfinder.config.AppConfig;
 import org.home.textfinder.utils.DialogWindows;
 import org.home.textfinder.utils.FileTreeUtils;
 import org.home.textfinder.utils.FileUtils;
+import org.home.textfinder.utils.Icons;
 
 import java.io.File;
 import java.io.IOException;
@@ -122,7 +124,7 @@ public class MainStageController implements Observable {
             }
         } else {
             if (!searchPath.isEmpty() && searchCatalog.exists()) {
-                TreeItem<String> rootItem = new TreeItem<>(searchPath);
+                TreeItem<String> rootItem = new TreeItem<>(searchPath, new ImageView(Icons.DIRECTORY_EXPANDED.getImage()));
                 rootItem.setExpanded(true);
                 searchResultTree.setRoot(rootItem);
                 FileTreeUtils.buildFilesWithExtensionsTree(rootItem, fileExtensionTextField.getText());
@@ -136,48 +138,26 @@ public class MainStageController implements Observable {
     @FXML
     void handleMouseClickedTreeItemAction(MouseEvent event) {
         final TreeItem<String> selectedItem = searchResultTree.getSelectionModel().getSelectedItem();
-        final String filePath = selectedItem.getValue();
+        if (selectedItem != null) {
 
-        if (Files.isRegularFile(Paths.get(filePath))) {
-            try {
-                String fileContent = FileUtils.getFileContent(filePath);
-                if (!fileContent.isEmpty()) {
-                    fileContentTextArea.setText(fileContent);
-                } else {
-                    fileContentTextArea.setText("");
-                    showInformationAlert(bundle.getString("alert.FileEmpty"));
+            final String filePath = selectedItem.getValue();
+
+            if (Files.isRegularFile(Paths.get(filePath))) {
+                try {
+                    String fileContent = FileUtils.getFileContent(filePath);
+                    if (!fileContent.isEmpty()) {
+                        fileContentTextArea.setText(fileContent);
+                    } else {
+                        fileContentTextArea.setText("");
+                        showInformationAlert(bundle.getString("alert.FileEmpty"));
+                    }
+                } catch (IOException e) {
+                    DialogWindows.showInformationAlert("Не могу прочитать этот файл !");
                 }
-            } catch (IOException e) {
-                DialogWindows.showInformationAlert("Не могу прочитать этот файл !");
             }
         }
     }
 
-    /*    */
-
-    /**
-     * Builds files tree, searched with specified extensions.
-     *//*
-    @SneakyThrows
-    private void buildFilesWithExtensionsTree(TreeItem<String> rootItem) {
-        String fileExtension = fileExtensionTextField.getText();
-
-        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(rootItem.getValue()))) {
-            for (Path path : directoryStream) {
-                TreeItem<String> treeItem = new TreeItem<>(path.toString());
-                treeItem.setExpanded(true);
-
-                if (Files.isDirectory(path)) {
-                    rootItem.getChildren().add(treeItem);
-                    buildFilesWithExtensionsTree(treeItem);
-                    removeEmptyTreeItem(rootItem);
-
-                } else if (path.toString().endsWith(fileExtension)) {
-                    rootItem.getChildren().add(treeItem);
-                }
-            }
-        }
-    }*/
     @FXML
     void showMenuAbout(ActionEvent event) {
         try {
