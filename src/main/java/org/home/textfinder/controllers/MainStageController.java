@@ -55,6 +55,8 @@ public class MainStageController implements Observable {
     private TextField fileContentSearchTextField;
     @FXML
     private RadioButton enableFileMaskRadioButton;
+    @FXML
+    private RadioButton enableFileContentRadioButton;
 
 
     @Override
@@ -84,16 +86,28 @@ public class MainStageController implements Observable {
 
     @FXML
     void handleFileMaskSearchAction(ActionEvent event) {
-        final RadioButton fileMaskRadioButton = (RadioButton) event.getSource();
-        if (fileMaskRadioButton.isSelected()) {
+        final RadioButton currentButton = (RadioButton) event.getSource();
+        if (currentButton.isSelected()) {
             fileExtensionTextField.setDisable(true);
             fileContentSearchTextField.setDisable(true);
             fileMaskTextField.setDisable(false);
             searchPathTextField.setDisable(false);
+            fileContentSearchTextField.setDisable(false);
         } else {
             fileExtensionTextField.setDisable(false);
             fileContentSearchTextField.setDisable(false);
             fileMaskTextField.setDisable(true);
+        }
+
+    }
+
+    @FXML
+    void handleFileContentSearchAction(ActionEvent event) {
+        final RadioButton currentButton = (RadioButton) event.getSource();
+        if (currentButton.isSelected()) {
+            fileContentSearchTextField.setDisable(false);
+        } else {
+            fileContentSearchTextField.setDisable(true);
         }
 
     }
@@ -110,27 +124,30 @@ public class MainStageController implements Observable {
 
     @FXML
     void handleSearchAction(ActionEvent event) {
+        fileContentTextArea.setText("");
+        String searchText = fileContentSearchTextField.getText().trim();
         String searchPath = searchPathTextField.getText();
         File searchCatalog = new File(searchPath);
+        TreeItem<String> rootItem = new TreeItem<>(searchPath, new ImageView(Icons.DIRECTORY_EXPANDED.getImage()));
+        rootItem.setExpanded(true);
+        searchResultTree.setRoot(rootItem);
+
+        if (searchPath.isEmpty() && !searchCatalog.exists()) {
+            DialogWindows.showInformationAlert("Путь указан неверно !");
+            return;
+        }
+
+        if (enableFileContentRadioButton.isSelected() && searchText.isEmpty()) {
+            DialogWindows.showInformationAlert("Не задан текст поиска !");
+            return;
+        }
 
         if (enableFileMaskRadioButton.isSelected()) {
-            if (!searchPath.isEmpty() && searchCatalog.exists()) {
-                TreeItem<String> rootItem = new TreeItem<>(searchPath);
-                rootItem.setExpanded(true);
-                searchResultTree.setRoot(rootItem);
-                FileTreeUtils.buildFilesMaskedTree(rootItem, fileMaskTextField.getText());
-            } else {
-                DialogWindows.showInformationAlert("Путь указан неверно !");
-            }
+            FileTreeUtils.buildFilesMaskedTree(rootItem, fileMaskTextField.getText());
+        } else if (enableFileContentRadioButton.isSelected()) {
+            FileTreeUtils.buildFilesWithContentTree(rootItem, fileExtensionTextField.getText(), searchText);
         } else {
-            if (!searchPath.isEmpty() && searchCatalog.exists()) {
-                TreeItem<String> rootItem = new TreeItem<>(searchPath, new ImageView(Icons.DIRECTORY_EXPANDED.getImage()));
-                rootItem.setExpanded(true);
-                searchResultTree.setRoot(rootItem);
-                FileTreeUtils.buildFilesWithExtensionsTree(rootItem, fileExtensionTextField.getText());
-            } else {
-                DialogWindows.showInformationAlert("Путь указан неверно !");
-            }
+            FileTreeUtils.buildFilesWithExtensionsTree(rootItem, fileExtensionTextField.getText());
         }
 
     }
@@ -180,4 +197,6 @@ public class MainStageController implements Observable {
     @FXML
     void initialize() {
     }
+
+
 }
