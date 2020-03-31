@@ -1,15 +1,20 @@
 package org.home.textfinder.utils;
 
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ResourceBundle;
+
+import static org.home.textfinder.utils.DialogWindows.showInformationAlert;
 
 /**
  * Util class for building search results in the TreeView.
@@ -17,7 +22,6 @@ import java.nio.file.Paths;
  * @author Sergei Viacheslaev
  */
 public class FileTreeUtils {
-
 
     @SneakyThrows
     public static void buildFilesWithExtensionsTree(TreeItem<String> rootItem, String fileExtension) {
@@ -75,6 +79,27 @@ public class FileTreeUtils {
                     TreeItem<String> directoryItem = addTreeItem(rootItem, path.toString(), new ImageView(Icons.DIRECTORY_EXPANDED.getImage()));
                     buildFilesWithContentTree(directoryItem, fileExtension, text);
                     removeEmptyTreeItem(rootItem);
+                }
+            }
+        }
+    }
+
+    public static void handleSelectedItemAction(TreeItem<String> selectedItem, TextArea fileContentTextArea, ResourceBundle bundle) {
+        if (selectedItem != null) {
+
+            final String filePath = selectedItem.getValue();
+
+            if (Files.isRegularFile(Paths.get(filePath))) {
+                try {
+                    String fileContent = FileUtils.getFileContent(filePath);
+                    if (!fileContent.isEmpty()) {
+                        fileContentTextArea.setText(fileContent);
+                    } else {
+                        fileContentTextArea.setText("");
+                        showInformationAlert(bundle.getString("alert.FileEmpty"));
+                    }
+                } catch (IOException e) {
+                    DialogWindows.showInformationAlert("Не могу прочитать этот файл !");
                 }
             }
         }

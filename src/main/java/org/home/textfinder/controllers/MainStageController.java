@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -16,17 +17,16 @@ import lombok.Setter;
 import org.home.textfinder.api.Observable;
 import org.home.textfinder.api.Observer;
 import org.home.textfinder.config.AppConfig;
-import org.home.textfinder.utils.*;
+import org.home.textfinder.utils.DialogWindows;
+import org.home.textfinder.utils.FileTreeUtils;
+import org.home.textfinder.utils.Icons;
+import org.home.textfinder.utils.TabPaneUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-
-import static org.home.textfinder.utils.DialogWindows.showInformationAlert;
 
 @Getter
 @Setter
@@ -41,7 +41,7 @@ public class MainStageController implements Observable {
     @FXML
     private TextField searchPathTextField;
     @FXML
-    private TreeView<String> searchResultTree;
+    private TreeView<String> firstSearchResultTree;
     @FXML
     private TextArea fileContentTextArea;
     @FXML
@@ -56,6 +56,8 @@ public class MainStageController implements Observable {
     private RadioButton enableFileContentRadioButton;
     @FXML
     private TabPane resultsTabPane;
+    @FXML
+    private AnchorPane searchResultAnchorPane;
 
 
     @Override
@@ -91,6 +93,7 @@ public class MainStageController implements Observable {
             fileContentSearchTextField.setDisable(true);
             fileMaskTextField.setDisable(false);
             searchPathTextField.setDisable(false);
+            enableFileContentRadioButton.setSelected(true);
             fileContentSearchTextField.setDisable(false);
         } else {
             fileExtensionTextField.setDisable(false);
@@ -123,20 +126,26 @@ public class MainStageController implements Observable {
 
     @FXML
     void handleSearchAction(ActionEvent event) {
-        //todo: Открывать новый поиск в новой вкладке
-        if (resultsTabPane.getTabs().size() < 4 && searchResultTree.getRoot() != null) {
-            TabPaneUtils.addTab(resultsTabPane, "Поиск #" + (resultsTabPane.getTabs().size() + 1));
-            return;
-        }
-
-
+        TreeView<String> searchResultsView = new TreeView<>();
         fileContentTextArea.setText("");
         String searchText = fileContentSearchTextField.getText().trim();
         String searchPath = searchPathTextField.getText();
         File searchCatalog = new File(searchPath);
+
         TreeItem<String> rootItem = new TreeItem<>(searchPath, new ImageView(Icons.DIRECTORY_EXPANDED.getImage()));
         rootItem.setExpanded(true);
-        searchResultTree.setRoot(rootItem);
+
+        if (resultsTabPane.getTabs().size() < 4 && firstSearchResultTree.getRoot() != null) {
+            performResultsView(searchResultsView);
+        }
+
+        //First search and others generated Tabs.
+        if (resultsTabPane.getTabs().size() == 1) {
+            firstSearchResultTree.setRoot(rootItem);
+        } else {
+            searchResultsView.setRoot(rootItem);
+        }
+
 
         if (searchPath.isEmpty() && !searchCatalog.exists()) {
             DialogWindows.showInformationAlert("Путь указан неверно !");
@@ -149,19 +158,13 @@ public class MainStageController implements Observable {
         }
 
 
+        if (enableFileMaskRadioButton.isSelected() && fileMaskTextField.getText().trim().isEmpty()) {
+            DialogWindows.showInformationAlert("Не задана маска названия файла!");
+            return;
+        }
+
         if (enableFileMaskRadioButton.isSelected()) {
-            if (searchText.isEmpty()) {
-                DialogWindows.showInformationAlert("Не задан текст поиска !");
-                return;
-            }
-
-            if (fileMaskTextField.getText().trim().isEmpty()) {
-                DialogWindows.showInformationAlert("Не задана маска названия файла!");
-                return;
-            }
-
             FileTreeUtils.buildFilesMaskedTree(rootItem, fileMaskTextField.getText(), searchText);
-
         } else if (enableFileContentRadioButton.isSelected()) {
             FileTreeUtils.buildFilesWithContentTree(rootItem, fileExtensionTextField.getText(), searchText);
         } else {
@@ -173,25 +176,8 @@ public class MainStageController implements Observable {
 
     @FXML
     void handleMouseClickedTreeItemAction(MouseEvent event) {
-        final TreeItem<String> selectedItem = searchResultTree.getSelectionModel().getSelectedItem();
-        if (selectedItem != null) {
-
-            final String filePath = selectedItem.getValue();
-
-            if (Files.isRegularFile(Paths.get(filePath))) {
-                try {
-                    String fileContent = FileUtils.getFileContent(filePath);
-                    if (!fileContent.isEmpty()) {
-                        fileContentTextArea.setText(fileContent);
-                    } else {
-                        fileContentTextArea.setText("");
-                        showInformationAlert(bundle.getString("alert.FileEmpty"));
-                    }
-                } catch (IOException e) {
-                    DialogWindows.showInformationAlert("Не могу прочитать этот файл !");
-                }
-            }
-        }
+        final TreeItem<String> selectedItem = firstSearchResultTree.getSelectionModel().getSelectedItem();
+        FileTreeUtils.handleSelectedItemAction(selectedItem, fileContentTextArea, bundle);
     }
 
     @FXML
@@ -199,7 +185,7 @@ public class MainStageController implements Observable {
         try {
             Stage stage = new Stage();
             Parent root = FXMLLoader.load(getClass().getResource(AppConfig.MENU_ABOUT_FXML_PATH));
-            stage.setTitle(appConfig.getBundle().getString("menu.about"));
+            stage.setTitle(bundle.getString("menu.about"));
             stage.setMinHeight(250);
             stage.setMinWidth(300);
             stage.setResizable(false);
@@ -217,5 +203,23 @@ public class MainStageController implements Observable {
     void initialize() {
     }
 
+
+    private void performResultsView(TreeView<String> searchResultsView) {
+
+        TextArea fileContent = new TextArea();
+        searchResultsView.addEventHandler(MouseEvent.MOUSE_CLICKED, clickEvent -> {
+            final TreeItem<String> selectedItem = searchResultsView.getSelectionModel().getSelectedItem();
+            FileTreeUtils.handleSelectedItemAction(selectedItem, fileContent, bundle);
+        });
+
+        final Tab newTab = TabPaneUtils.addTab(resultsTabPane, "Поиск #" + (resultsTabPane.getTabs().size() + 1));
+        SplitPane splitPane = new SplitPane();
+        splitPane.setDividerPositions(0.32d);
+        splitPane.getItems().addAll(searchResultsView, fileContent);
+        newTab.setContent(splitPane);
+        resultsTabPane.getSelectionModel().select(newTab);
+
+
+    }
 
 }
