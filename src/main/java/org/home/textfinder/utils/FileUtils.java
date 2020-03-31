@@ -32,7 +32,6 @@ public class FileUtils {
 
                 if (contentLine.contains(searchedText)) {
                     isContentFound = true;
-                    System.out.println(contentLine);
                 }
             }
         } finally {

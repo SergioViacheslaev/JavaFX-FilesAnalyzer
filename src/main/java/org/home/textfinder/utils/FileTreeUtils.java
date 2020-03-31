@@ -40,17 +40,19 @@ public class FileTreeUtils {
 
 
     @SneakyThrows
-    public static void buildFilesMaskedTree(TreeItem<String> rootItem, String fileMask) {
+    public static void buildFilesMaskedTree(TreeItem<String> rootItem, String fileMask, String text) {
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(rootItem.getValue()))) {
             for (Path path : directoryStream) {
 
-                if (Files.isRegularFile(path) && StringUtils.containsIgnoreCase(path.toString(), fileMask)) {
+                if (Files.isRegularFile(path)
+                        && StringUtils.containsIgnoreCase(path.toString(), fileMask)
+                        && FileUtils.checkFileContainsText(new File(path.toString()), text)) {
                     rootItem.getChildren().add(new TreeItem<>(path.toString()));
                 }
 
                 if (Files.isDirectory(path)) {
                     TreeItem<String> directoryItem = addTreeItem(rootItem, path.toString(), new ImageView(Icons.DIRECTORY_EXPANDED.getImage()));
-                    buildFilesWithExtensionsTree(directoryItem, fileMask);
+                    buildFilesMaskedTree(directoryItem, fileMask, text);
                     removeEmptyTreeItem(rootItem);
                 }
             }

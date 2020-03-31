@@ -60,7 +60,7 @@
             </ImageView>
          </graphic>
       </Button>
-      <SplitPane dividerPositions="0.28975265017667845" layoutX="5.0" layoutY="301.0" prefHeight="359.0" prefWidth="914.0" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="301.0">
+      <SplitPane dividerPositions="0.28975265017667845" layoutX="5.0" layoutY="301.0" prefHeight="359.0" prefWidth="922.0" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="301.0">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
@@ -74,7 +74,7 @@
             </AnchorPane>
         </items>
       </SplitPane>
-      <TextField fx:id="fileMaskTextField" disable="true" focusTraversable="false" layoutX="12.0" layoutY="202.0" prefHeight="30.0" prefWidth="202.0">
+      <TextField fx:id="fileMaskTextField" disable="true" focusTraversable="false" layoutX="12.0" layoutY="202.0" prefHeight="30.0" prefWidth="255.0" promptText="название файла содержит текст">
          <font>
             <Font size="14.0" />
          </font>

@@ -142,13 +142,26 @@ public class MainStageController implements Observable {
             return;
         }
 
+
         if (enableFileMaskRadioButton.isSelected()) {
-            FileTreeUtils.buildFilesMaskedTree(rootItem, fileMaskTextField.getText());
+            if (searchText.isEmpty()) {
+                DialogWindows.showInformationAlert("Не задан текст поиска !");
+                return;
+            }
+
+            if (fileMaskTextField.getText().trim().isEmpty()) {
+                DialogWindows.showInformationAlert("Не задана маска названия файла!");
+                return;
+            }
+
+            FileTreeUtils.buildFilesMaskedTree(rootItem, fileMaskTextField.getText(), searchText);
+
         } else if (enableFileContentRadioButton.isSelected()) {
             FileTreeUtils.buildFilesWithContentTree(rootItem, fileExtensionTextField.getText(), searchText);
         } else {
             FileTreeUtils.buildFilesWithExtensionsTree(rootItem, fileExtensionTextField.getText());
         }
+
 
     }
 
