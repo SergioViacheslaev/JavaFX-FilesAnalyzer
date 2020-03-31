@@ -16,10 +16,7 @@ import lombok.Setter;
 import org.home.textfinder.api.Observable;
 import org.home.textfinder.api.Observer;
 import org.home.textfinder.config.AppConfig;
-import org.home.textfinder.utils.DialogWindows;
-import org.home.textfinder.utils.FileTreeUtils;
-import org.home.textfinder.utils.FileUtils;
-import org.home.textfinder.utils.Icons;
+import org.home.textfinder.utils.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,6 +54,8 @@ public class MainStageController implements Observable {
     private RadioButton enableFileMaskRadioButton;
     @FXML
     private RadioButton enableFileContentRadioButton;
+    @FXML
+    private TabPane resultsTabPane;
 
 
     @Override
@@ -124,6 +123,13 @@ public class MainStageController implements Observable {
 
     @FXML
     void handleSearchAction(ActionEvent event) {
+        //todo: Открывать новый поиск в новой вкладке
+        if (resultsTabPane.getTabs().size() < 4 && searchResultTree.getRoot() != null) {
+            TabPaneUtils.addTab(resultsTabPane, "Поиск #" + (resultsTabPane.getTabs().size() + 1));
+            return;
+        }
+
+
         fileContentTextArea.setText("");
         String searchText = fileContentSearchTextField.getText().trim();
         String searchPath = searchPathTextField.getText();
