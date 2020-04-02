@@ -1,5 +1,6 @@
 package org.home.textfinder.utils;
 
+import javafx.application.Platform;
 import javafx.scene.control.Alert;
 
 /**
@@ -8,10 +9,13 @@ import javafx.scene.control.Alert;
 public class DialogWindows {
 
     public static void showInformationAlert(String alertText) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("");
-        alert.setHeaderText("");
-        alert.setContentText(alertText);
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("");
+            alert.setHeaderText("");
+            alert.setContentText(alertText);
+            alert.showAndWait();
+        });
+
     }
 }

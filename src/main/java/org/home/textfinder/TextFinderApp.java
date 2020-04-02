@@ -37,6 +37,7 @@ public class TextFinderApp extends Application implements Observer {
         MainStageController controller = fxmlLoader.getController();
         controller.setAppConfig(config);
         controller.setBundle(fxmlLoader.getResources());
+        controller.setupListeners(primaryStage);
         controller.addObserver(this);
 
         primaryStage.show();

@@ -5,7 +5,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="672.0" prefWidth="932.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.home.textfinder.controllers.MainStageController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="672.0" prefWidth="982.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.home.textfinder.controllers.MainStageController">
    <children>
       <MenuBar layoutY="-2.0" prefHeight="26.0" prefWidth="631.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <menus>
@@ -41,7 +41,7 @@
             <Font size="14.0" />
          </font>
       </TextField>
-      <Text layoutX="61.0" layoutY="293.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text-labels" text="Результаты поиска" wrappingWidth="158.0" AnchorPane.leftAnchor="61.0" AnchorPane.rightAnchor="713.0">
+      <Text layoutX="46.0" layoutY="277.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text-labels" text="Результаты поиска" wrappingWidth="158.0" AnchorPane.leftAnchor="46.0" AnchorPane.rightAnchor="728.0">
          <font>
             <Font name="Aver" size="16.0" />
          </font>
@@ -51,7 +51,7 @@
             <Font size="14.0" />
          </font>
       </TextField>
-      <Button fx:id="searchButton" disable="true" focusTraversable="false" layoutX="330.0" layoutY="37.0" mnemonicParsing="false" onAction="#handleSearchAction" prefHeight="51.0" prefWidth="64.0">
+      <Button fx:id="searchButton" disable="true" focusTraversable="false" layoutX="330.0" layoutY="37.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="64.0">
          <graphic>
             <ImageView fitHeight="51.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -60,20 +60,6 @@
             </ImageView>
          </graphic>
       </Button>
-      <SplitPane dividerPositions="0.28975265017667845" layoutX="5.0" layoutY="301.0" prefHeight="359.0" prefWidth="922.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="301.0">
-        <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-               <children>
-                  <TreeView fx:id="firstSearchResultTree" focusTraversable="false" layoutX="3.0" layoutY="4.0" onMouseClicked="#handleMouseClickedTreeItemAction" prefHeight="321.0" prefWidth="237.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="4.0" />
-               </children>
-            </AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-               <children>
-                  <TextArea fx:id="fileContentTextArea" focusTraversable="false" layoutY="-2.0" prefHeight="330.0" prefWidth="600.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-2.0" />
-               </children>
-            </AnchorPane>
-        </items>
-      </SplitPane>
       <TextField fx:id="fileMaskTextField" disable="true" focusTraversable="false" layoutX="12.0" layoutY="202.0" prefHeight="30.0" prefWidth="255.0" promptText="название файла содержит текст">
          <font>
             <Font size="14.0" />
@@ -93,5 +79,36 @@
             <Font name="Aver" size="14.0" />
          </font>
       </RadioButton>
+      <TabPane fx:id="resultsTabPane" layoutX="3.0" layoutY="284.0" prefHeight="382.0" prefWidth="868.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="111.0" AnchorPane.topAnchor="284.0">
+         <tabs>
+            <Tab closable="false" text="Поиск #1">
+               <content>
+                  <AnchorPane prefHeight="331.0" prefWidth="846.0">
+                     <children>
+                        <SplitPane dividerPositions="0.32" layoutX="1.0" prefHeight="345.0" prefWidth="752.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0">
+                          <items>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                 <children>
+                                    <TreeView fx:id="firstSearchResultTree" focusTraversable="false" layoutY="-3.0" onMouseClicked="#handleMouseClickedTreeItemAction" prefHeight="352.0" prefWidth="249.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-3.0" />
+                                 </children>
+                              </AnchorPane>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="343.0" prefWidth="439.0">
+                                 <children>
+                                    <TextArea fx:id="fileContentTextArea" focusTraversable="false" layoutY="-2.0" prefHeight="344.0" prefWidth="407.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-3.0" AnchorPane.topAnchor="-2.0" />
+                                 </children>
+                              </AnchorPane>
+                          </items>
+                        </SplitPane>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+         </tabs>
+      </TabPane>
+      <TabPane layoutX="805.0" layoutY="284.0" prefHeight="382.0" prefWidth="108.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="6.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="284.0">
+        <tabs>
+          <Tab closable="false" text="Управление" />
+        </tabs>
+      </TabPane>
    </children>
 </AnchorPane>

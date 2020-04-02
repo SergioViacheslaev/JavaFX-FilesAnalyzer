@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import org.home.textfinder.config.AppConfig;
 
 public class MenuAboutController {
 
@@ -25,11 +26,12 @@ public class MenuAboutController {
         String encoding = System.getProperty("file.encoding");
         String javafx_version = System.getProperty("javafx.version");
 
-        system_info.setText(String.format("OS: %s %s%n%s%s%n%n%s",
+        system_info.setText(String.format("OS: %s %s%n%s%s%s%n%s",
                 os_name,
                 os_version,
                 String.format("Java: %s %s%n", java_runtime, java_version),
                 String.format("Encoding: %s%n", encoding),
+                String.format("Available processors: %d%n", AppConfig.AVAILABLE_PROCESSORS),
                 String.format("Powered by OpenJFX %s%n", javafx_version)));
     }
 

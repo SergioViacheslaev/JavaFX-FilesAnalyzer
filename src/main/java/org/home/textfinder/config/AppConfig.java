@@ -15,7 +15,8 @@ import java.util.ResourceBundle;
 @Getter
 @Setter
 public class AppConfig {
-    public static final String MAIN_STAGE_FXML_PATH = "/static/view/mainStage_new.fxml";
+    public static final int AVAILABLE_PROCESSORS = Runtime.getRuntime().availableProcessors();
+    public static final String MAIN_STAGE_FXML_PATH = "/static/view/mainStage.fxml";
     public static final String MENU_ABOUT_FXML_PATH = "/static/view/menuAbout.fxml";
     public static final Locale APP_LOCALE_RUSSIAN = new Locale("ru");
     public static final Locale APP_LOCALE_ENGLISH = new Locale("en");
