@@ -1,12 +1,9 @@
 package org.home.textfinder.controllers;
 
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -17,11 +14,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.SneakyThrows;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
-import org.fxmisc.richtext.StyleClassedTextArea;
 import org.home.textfinder.api.Observable;
 import org.home.textfinder.api.Observer;
 import org.home.textfinder.config.AppConfig;
@@ -42,6 +37,9 @@ import static org.home.textfinder.utils.DialogWindows.showInformationAlert;
 @Getter
 @Setter
 public class MainStageController implements Observable {
+    public static final double DIVIDER_POSITION = 0.24;
+    public static final long FIZE_SIZE_LIMIT = 104857600L; //100 MB
+    public static final int CODE_AREA_INDEX = 1;
     private final DirectoryChooser directoryChooser = new DirectoryChooser();
     private final List<Observer> observers = new ArrayList<>();
     private AppConfig appConfig;
@@ -101,21 +99,16 @@ public class MainStageController implements Observable {
 
     @FXML
     private void initialize() {
-        oneTabModeCheckBox.setSelected(true);
-        oneTabModeCheckBox.setDisable(true);
-        oneTabModeCheckBox.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                final CheckBox checkBox = (CheckBox) event.getSource();
-                if (checkBox.isSelected()) {
-                    final int tabsCount = resultsTabPane.getTabs().size();
-                    if (tabsCount > 1) {
-                        resultsTabPane.getTabs().remove(1, tabsCount);
-                    }
+        oneTabModeCheckBox.setOnAction(event -> {
+            final CheckBox checkBox = (CheckBox) event.getSource();
+            if (checkBox.isSelected()) {
+                final int tabsCount = resultsTabPane.getTabs().size();
+                if (tabsCount > 1) {
+                    resultsTabPane.getTabs().remove(1, tabsCount);
                 }
             }
         });
-        performResultsView(new TreeView<>());
+        performResultsViewAndListeners(new TreeView<>());
 
 
         //todo: Temp for testing
@@ -123,19 +116,10 @@ public class MainStageController implements Observable {
         searchButton.setDisable(false);
 
 
-        readForwardButton.setOnAction(new EventHandler<ActionEvent>() {
-            @SneakyThrows
-            @Override
-            public void handle(ActionEvent event) {
-                final Tab selectedTab = resultsTabPane.getSelectionModel().getSelectedItem();
-                final SplitPane splitPane = (SplitPane) selectedTab.getContent();
-                splitPane.getItems().remove(1);
-                StyleClassedTextArea textArea = new StyleClassedTextArea();
-                textArea.appendText(FileUtils.getNextPageContent(currentFilePath));
-
-                splitPane.getItems().add(textArea);
-
-            }
+        readForwardButton.setOnAction(event -> {
+            final Tab selectedTab = resultsTabPane.getSelectionModel().getSelectedItem();
+            CodeArea codeArea = performFileViewArea(selectedTab);
+            codeArea.appendText(FileUtils.getNextPageContent(currentFilePath));
         });
 
 
@@ -230,10 +214,9 @@ public class MainStageController implements Observable {
                 return;
             }
 
-            if ((resultsTabPane.getTabs().size() >= 1 && resultsTabPane.getTabs().size() <= 4) && !oneTabModeCheckBox.isDisabled()) {
-                performResultsView(searchResultsView);
+            if (!oneTabModeCheckBox.isSelected()) {
+                performResultsViewAndListeners(searchResultsView);
             }
-
 
             if (enableFileMaskRadioButton.isSelected()) {
                 FileTreeUtils.buildFilesMaskedTree(rootItem, fileMaskTextField.getText(), searchText);
@@ -259,73 +242,82 @@ public class MainStageController implements Observable {
     }
 
 
-    private void performResultsView(TreeView<String> searchResultsView) {
-
+    private void performResultsViewAndListeners(TreeView<String> searchResultsView) {
         CodeArea fileContentArea = new CodeArea();
         fileContentArea.setVisible(false);
         fileContentArea.setParagraphGraphicFactory(LineNumberFactory.get(fileContentArea));
         VirtualizedScrollPane<CodeArea> scrollPane = new VirtualizedScrollPane<>(fileContentArea);
         Tab newTab = TabPaneUtils.addTab(resultsTabPane);
 
+        SplitPane splitPane = new SplitPane();
+        splitPane.getItems().addAll(searchResultsView, scrollPane);
+        splitPane.setDividerPositions(DIVIDER_POSITION);
+
+        Platform.runLater(() -> {
+            newTab.setContent(splitPane);
+            resultsTabPane.getSelectionModel().select(newTab);
+        });
 
         searchResultsView.addEventHandler(MouseEvent.MOUSE_CLICKED, clickEvent -> {
             final TreeItem<String> selectedFilepath = searchResultsView.getSelectionModel().getSelectedItem();
             if (selectedFilepath != null) {
+                currentFilePath = selectedFilepath.getValue();
 
                 final Tab selectedTab = resultsTabPane.getSelectionModel().getSelectedItem();
-                final SplitPane splitPane = (SplitPane) selectedTab.getContent();
-                final ObservableList<Node> items = splitPane.getItems();
-                splitPane.getItems().remove(1);
-                CodeArea codeArea = new CodeArea();
-                codeArea.setParagraphGraphicFactory(LineNumberFactory.get(fileContentArea));
-                VirtualizedScrollPane<CodeArea> virtualizedScrollPane = new VirtualizedScrollPane<>(codeArea);
-                splitPane.getItems().add(virtualizedScrollPane);
-
-                currentFilePath = selectedFilepath.getValue();
+                CodeArea codeArea = performFileViewArea(selectedTab);
                 showSelectedFile(selectedFilepath, codeArea, bundle);
             }
         });
 
 
-        SplitPane splitPane = new SplitPane();
-        splitPane.setDividerPositions(0.32d);
-        splitPane.getItems().addAll(searchResultsView, scrollPane);
-        Platform.runLater(() -> {
-            newTab.setContent(splitPane);
-            resultsTabPane.getSelectionModel().select(newTab);
-        });
     }
 
     private void showSelectedFile(TreeItem<String> selectedItem, CodeArea fileContentTextArea, ResourceBundle bundle) {
-        Runnable readFileTask = () -> {
-            if (selectedItem != null) {
-
-                final String filePath = selectedItem.getValue();
-
-                if (Files.isRegularFile(Paths.get(filePath))) {
-                    try {
-                        String fileContent = FileUtils.getFileContent(filePath);
-
-                        if (!fileContent.isEmpty()) {
+        if (selectedItem != null) {
+            final String filePath = selectedItem.getValue();
+            if (Files.isRegularFile(Paths.get(filePath))) {
+                try {
+                    if (Files.size(Paths.get(filePath)) > FIZE_SIZE_LIMIT) {
+                        String filePageContent = FileUtils.getNextPageContent(filePath);
+                        if (!filePageContent.isEmpty()) {
                             Platform.runLater(() -> {
-                                fileContentTextArea.replaceText(fileContent);
+                                fileContentTextArea.replaceText(filePageContent);
                                 fileContentTextArea.setVisible(true);
                             });
-
+                        }
+                        readForwardButton.setDisable(false);
+                    } else {
+                        String fileFullContent = FileUtils.getFileContent(filePath);
+                        if (!fileFullContent.isEmpty()) {
+                            Platform.runLater(() -> {
+                                fileContentTextArea.replaceText(fileFullContent);
+                                fileContentTextArea.setVisible(true);
+                            });
                         } else {
                             showInformationAlert(bundle.getString("alert.FileEmpty"));
                             Platform.runLater(() -> fileContentTextArea.setVisible(false));
                         }
-
-                    } catch (IOException e) {
-                        showInformationAlert("Не могу прочитать этот файл !");
                     }
+
+                } catch (IOException e) {
+                    showInformationAlert("Не могу прочитать этот файл !");
                 }
             }
-        };
+        }
 
-        executorService.execute(readFileTask);
+    }
 
+    private CodeArea performFileViewArea(Tab selectedTab) {
+        final SplitPane currentPane = (SplitPane) selectedTab.getContent();
+        currentPane.getItems().remove(CODE_AREA_INDEX);
+        CodeArea codeArea = new CodeArea();
+        codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
+        VirtualizedScrollPane<CodeArea> scrollPane = new VirtualizedScrollPane<>(codeArea);
+        currentPane.getItems().add(scrollPane);
+        currentPane.setDividerPositions(DIVIDER_POSITION);
+
+        scrollPane.setDisable(false);
+        return codeArea;
     }
 
 

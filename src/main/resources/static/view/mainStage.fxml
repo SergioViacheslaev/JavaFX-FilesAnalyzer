@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="672.0" prefWidth="1035.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.home.textfinder.controllers.MainStageController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.home.textfinder.controllers.MainStageController">
    <children>
       <MenuBar layoutY="-2.0" prefHeight="26.0" prefWidth="631.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <menus>
@@ -41,7 +41,7 @@
             <Font size="14.0" />
          </font>
       </TextField>
-      <Text layoutX="48.0" layoutY="198.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text-labels" text="Результаты поиска" wrappingWidth="158.0" AnchorPane.leftAnchor="48.0" AnchorPane.rightAnchor="829.0">
+      <Text layoutX="48.0" layoutY="207.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text-labels" text="Результаты поиска" wrappingWidth="158.0" AnchorPane.leftAnchor="48.0" AnchorPane.rightAnchor="829.0">
          <font>
             <Font name="Aver" size="16.0" />
          </font>
@@ -80,11 +80,36 @@
          </font>
       </RadioButton>
       <TabPane fx:id="resultsTabPane" layoutX="3.0" layoutY="214.0" prefHeight="452.0" prefWidth="1029.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="214.0" />
-      <AnchorPane layoutX="692.0" layoutY="202.0" prefHeight="41.0" prefWidth="339.0" AnchorPane.bottomAnchor="429.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="202.0">
+      <AnchorPane layoutX="719.0" layoutY="176.0" prefHeight="43.0" prefWidth="279.0" AnchorPane.bottomAnchor="549.0" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="176.0">
          <children>
-            <Button fx:id="readBackButton" layoutX="196.0" layoutY="11.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="61.0" text="back" />
-            <Button fx:id="readForwardButton" layoutX="269.0" layoutY="11.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="59.0" text="forward" />
-            <CheckBox fx:id="oneTabModeCheckBox" layoutX="62.0" layoutY="15.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="109.0" text="One Tab Mode" />
+            <CheckBox fx:id="oneTabModeCheckBox" disable="true" layoutX="58.0" layoutY="14.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="110.0" selected="true" text="OneTab Mode">
+               <font>
+                  <Font name="Aver" size="13.0" />
+               </font></CheckBox>
+            <Button fx:id="readBackButton" contentDisplay="GRAPHIC_ONLY" disable="true" graphicTextGap="1.0" layoutX="170.0" layoutY="9.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="32.0">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="44.0" pickOnBounds="true">
+                     <image>
+                        <Image url="@../images/backPage.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </Button>
+            <Button fx:id="readForwardButton" contentDisplay="GRAPHIC_ONLY" disable="true" graphicTextGap="1.0" layoutX="236.0" layoutY="9.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="32.0">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="44.0" pickOnBounds="true">
+                     <image>
+                        <Image url="@../images/forwardPage.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </Button>
          </children>
       </AnchorPane>
    </children>

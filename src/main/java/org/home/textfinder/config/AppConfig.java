@@ -31,11 +31,13 @@ public class AppConfig {
 
     public void initStageParams() {
         primaryStage.getIcons().add(new Image("static/images/logo.png"));
-        primaryStage.setMinWidth(420);
-        primaryStage.setMinHeight(450);
+        primaryStage.setMinWidth(800);
+        primaryStage.setMinHeight(600);
+        primaryStage.setWidth(960);
+        primaryStage.setHeight(720);
         primaryStage.setTitle(bundle.getString("appTitle"));
-        primaryStage.getScene().getStylesheets().add(0, "/static/css/text-labels.css");
-        primaryStage.getScene().getStylesheets().add(1, "/static/css/text-area.css");
+        primaryStage.getScene().getStylesheets().add( "/static/css/text-labels.css");
+        primaryStage.getScene().getStylesheets().add( "/static/css/text-area.css");
         Font.loadFont(getClass().getResourceAsStream("/static/fonts/aver.ttf"),16);
     }
 

@@ -22,8 +22,7 @@ public class FileUtils {
     public static String getFileContent(String filePath) throws IOException {
 
         if (Files.size(Paths.get(filePath)) > fileSizeLimit) {
-            DialogWindows.showInformationAlert("Файл больше 100 МБ !");
-            return "";
+           return getNextPageContent(filePath);
         } else {
 //            File file = new File(filePath);
 //            return org.apache.commons.io.FileUtils.readFileToString(file, StandardCharsets.UTF_8);
@@ -100,7 +99,8 @@ public class FileUtils {
     }*/
 
 
-    public static String getNextPageContent(String filePath) throws IOException {
+    @SneakyThrows
+    public static String getNextPageContent(String filePath)   {
 //        StringBuilder sb = new StringBuilder((int) Files.size(Paths.get(filePath)));
 
 
