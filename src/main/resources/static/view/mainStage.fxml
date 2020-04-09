@@ -5,7 +5,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="672.0" prefWidth="982.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.home.textfinder.controllers.MainStageController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="672.0" prefWidth="1035.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.home.textfinder.controllers.MainStageController">
    <children>
       <MenuBar layoutY="-2.0" prefHeight="26.0" prefWidth="631.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <menus>
@@ -26,7 +26,7 @@
             </Menu>
          </menus>
       </MenuBar>
-      <TextField fx:id="searchPathTextField" focusTraversable="false" layoutX="144.0" layoutY="37.0" onMouseClicked="#handleChooseSearchPathAction" prefHeight="30.0" prefWidth="177.0" promptText="Путь к папке...">
+      <TextField fx:id="searchPathTextField" focusTraversable="false" layoutX="144.0" layoutY="37.0" onMouseClicked="#handleSearchPathSetAction" prefHeight="30.0" prefWidth="177.0" promptText="Путь к папке...">
          <font>
             <Font size="14.0" />
          </font>
@@ -41,17 +41,17 @@
             <Font size="14.0" />
          </font>
       </TextField>
-      <Text layoutX="46.0" layoutY="277.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text-labels" text="Результаты поиска" wrappingWidth="158.0" AnchorPane.leftAnchor="46.0" AnchorPane.rightAnchor="728.0">
+      <Text layoutX="48.0" layoutY="198.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text-labels" text="Результаты поиска" wrappingWidth="158.0" AnchorPane.leftAnchor="48.0" AnchorPane.rightAnchor="829.0">
          <font>
             <Font name="Aver" size="16.0" />
          </font>
       </Text>
-      <TextField fx:id="fileContentSearchTextField" disable="true" focusTraversable="false" layoutX="11.0" layoutY="136.0" prefHeight="30.0" prefWidth="255.0" promptText="что ищем ?">
+      <TextField fx:id="fileContentSearchTextField" disable="true" focusTraversable="false" layoutX="331.0" layoutY="59.0" prefHeight="30.0" prefWidth="255.0" promptText="что ищем ?">
          <font>
             <Font size="14.0" />
          </font>
       </TextField>
-      <Button fx:id="searchButton" disable="true" focusTraversable="false" layoutX="330.0" layoutY="37.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="64.0">
+      <Button fx:id="searchButton" disable="true" focusTraversable="false" layoutX="600.0" layoutY="38.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="64.0">
          <graphic>
             <ImageView fitHeight="51.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -60,12 +60,12 @@
             </ImageView>
          </graphic>
       </Button>
-      <TextField fx:id="fileMaskTextField" disable="true" focusTraversable="false" layoutX="12.0" layoutY="202.0" prefHeight="30.0" prefWidth="255.0" promptText="название файла содержит текст">
+      <TextField fx:id="fileMaskTextField" disable="true" focusTraversable="false" layoutX="332.0" layoutY="125.0" prefHeight="30.0" prefWidth="255.0" promptText="название файла содержит текст">
          <font>
             <Font size="14.0" />
          </font>
       </TextField>
-      <RadioButton fx:id="enableFileMaskRadioButton" focusTraversable="false" layoutX="12.0" layoutY="180.0" mnemonicParsing="false" onAction="#handleFileMaskSearchAction" prefHeight="19.0" prefWidth="210.0" text="Включить поиск по маске">
+      <RadioButton fx:id="enableFileMaskRadioButton" focusTraversable="false" layoutX="332.0" layoutY="103.0" mnemonicParsing="false" onAction="#handleFileMaskSetAction" prefHeight="19.0" prefWidth="210.0" text="Включить поиск по маске">
          <font>
             <Font name="Aver" size="14.0" />
          </font></RadioButton>
@@ -74,41 +74,18 @@
             <Font name="Aver" size="16.0" />
          </font>
       </Text>
-      <RadioButton fx:id="enableFileContentRadioButton" focusTraversable="false" layoutX="12.0" layoutY="114.0" mnemonicParsing="false" onAction="#handleFileContentSearchAction" prefHeight="19.0" prefWidth="255.0" text="Включить поиск по содержимому">
+      <RadioButton fx:id="enableFileContentRadioButton" focusTraversable="false" layoutX="332.0" layoutY="37.0" mnemonicParsing="false" onAction="#handleFileContentSetAction" prefHeight="19.0" prefWidth="255.0" text="Включить поиск по содержимому">
          <font>
             <Font name="Aver" size="14.0" />
          </font>
       </RadioButton>
-      <TabPane fx:id="resultsTabPane" layoutX="3.0" layoutY="284.0" prefHeight="382.0" prefWidth="868.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="111.0" AnchorPane.topAnchor="284.0">
-         <tabs>
-            <Tab closable="false" text="Поиск #1">
-               <content>
-                  <AnchorPane prefHeight="331.0" prefWidth="846.0">
-                     <children>
-                        <SplitPane dividerPositions="0.32" layoutX="1.0" prefHeight="345.0" prefWidth="752.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0">
-                          <items>
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-                                 <children>
-                                    <TreeView fx:id="firstSearchResultTree" focusTraversable="false" layoutY="-3.0" onMouseClicked="#handleMouseClickedTreeItemAction" prefHeight="352.0" prefWidth="249.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-3.0" />
-                                 </children>
-                              </AnchorPane>
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="343.0" prefWidth="439.0">
-                                 <children>
-                                    <TextArea fx:id="fileContentTextArea" focusTraversable="false" layoutY="-2.0" prefHeight="344.0" prefWidth="407.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-3.0" AnchorPane.topAnchor="-2.0" />
-                                 </children>
-                              </AnchorPane>
-                          </items>
-                        </SplitPane>
-                     </children>
-                  </AnchorPane>
-               </content>
-            </Tab>
-         </tabs>
-      </TabPane>
-      <TabPane layoutX="805.0" layoutY="284.0" prefHeight="382.0" prefWidth="108.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="6.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="284.0">
-        <tabs>
-          <Tab closable="false" text="Управление" />
-        </tabs>
-      </TabPane>
+      <TabPane fx:id="resultsTabPane" layoutX="3.0" layoutY="214.0" prefHeight="452.0" prefWidth="1029.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="214.0" />
+      <AnchorPane layoutX="692.0" layoutY="202.0" prefHeight="41.0" prefWidth="339.0" AnchorPane.bottomAnchor="429.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="202.0">
+         <children>
+            <Button fx:id="readBackButton" layoutX="196.0" layoutY="11.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="61.0" text="back" />
+            <Button fx:id="readForwardButton" layoutX="269.0" layoutY="11.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="59.0" text="forward" />
+            <CheckBox fx:id="oneTabModeCheckBox" layoutX="62.0" layoutY="15.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="109.0" text="One Tab Mode" />
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>

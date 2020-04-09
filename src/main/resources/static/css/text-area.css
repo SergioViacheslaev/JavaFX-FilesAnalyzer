@@ -1,0 +1,11 @@
+.styled-text-area .paragraph-box .paragraph-text {
+    -fx-padding: 0 5px 0 5px;
+}
+
+.styled-text-area .paragraph-box:last-paragraph .paragraph-text {
+    -fx-padding: 0 5px 5px 5px;
+}
+
+.styled-text-area .paragraph-box:first-paragraph .paragraph-text {
+    -fx-padding: 5px 5px 0 5px;
+}

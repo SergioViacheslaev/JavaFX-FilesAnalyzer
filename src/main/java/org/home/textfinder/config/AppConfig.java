@@ -35,6 +35,7 @@ public class AppConfig {
         primaryStage.setMinHeight(450);
         primaryStage.setTitle(bundle.getString("appTitle"));
         primaryStage.getScene().getStylesheets().add(0, "/static/css/text-labels.css");
+        primaryStage.getScene().getStylesheets().add(1, "/static/css/text-area.css");
         Font.loadFont(getClass().getResourceAsStream("/static/fonts/aver.ttf"),16);
     }
 
