@@ -38,7 +38,6 @@ import static org.home.textfinder.utils.DialogWindows.showInformationAlert;
 @Setter
 public class MainStageController implements Observable {
     public static final double DIVIDER_POSITION = 0.24;
-    public static final long FIZE_SIZE_LIMIT = 104857600L; //100 MB
     public static final int CODE_AREA_INDEX = 1;
     private final DirectoryChooser directoryChooser = new DirectoryChooser();
     private final List<Observer> observers = new ArrayList<>();
@@ -70,6 +69,8 @@ public class MainStageController implements Observable {
     private Button readForwardButton;
     @FXML
     private CheckBox oneTabModeCheckBox;
+    @FXML
+    private CheckBox largeFileModeCheckBox;
 
 
     @Override
@@ -99,15 +100,38 @@ public class MainStageController implements Observable {
 
     @FXML
     private void initialize() {
+        largeFileModeCheckBox.setOnAction(event -> {
+            final CheckBox largeFile = (CheckBox) event.getSource();
+            if (largeFile.isSelected()) {
+
+                DialogWindows.showInformationAlert("В данном режиме файл любого размера загружается полностью в ОЗУ, отслеживайте наличие свободной памяти и параметры запуска JVM: -Xms -Xmx");
+                resultsTabPane.getTabs().remove(1, resultsTabPane.getTabs().size());
+                oneTabModeCheckBox.setSelected(true);
+                oneTabModeCheckBox.setDisable(true);
+
+                largeFile.setOnAction(action -> {
+                    if (largeFile.isSelected()) {
+                        resultsTabPane.getTabs().remove(1, resultsTabPane.getTabs().size());
+                        oneTabModeCheckBox.setSelected(true);
+                        oneTabModeCheckBox.setDisable(true);
+                    } else {
+                        oneTabModeCheckBox.setDisable(false);
+                    }
+                });
+            }
+        });
+
+
         oneTabModeCheckBox.setOnAction(event -> {
-            final CheckBox checkBox = (CheckBox) event.getSource();
-            if (checkBox.isSelected()) {
+            final CheckBox oneTab = (CheckBox) event.getSource();
+            if (oneTab.isSelected()) {
                 final int tabsCount = resultsTabPane.getTabs().size();
                 if (tabsCount > 1) {
                     resultsTabPane.getTabs().remove(1, tabsCount);
                 }
             }
         });
+
         performResultsViewAndListeners(new TreeView<>());
 
 
@@ -116,14 +140,18 @@ public class MainStageController implements Observable {
         searchButton.setDisable(false);
 
 
-        readForwardButton.setOnAction(event -> {
+        readForwardButton.setOnAction(event ->
+
+        {
             final Tab selectedTab = resultsTabPane.getSelectionModel().getSelectedItem();
             CodeArea codeArea = performFileViewArea(selectedTab);
             codeArea.appendText(FileUtils.getNextPageContent(currentFilePath));
         });
 
 
-        searchButton.setOnAction(event -> startSearchTask());
+        searchButton.setOnAction(event ->
+
+                startSearchTask());
 
 
     }
@@ -272,12 +300,22 @@ public class MainStageController implements Observable {
 
     }
 
-    private void showSelectedFile(TreeItem<String> selectedItem, CodeArea fileContentTextArea, ResourceBundle bundle) {
+    private void showSelectedFile(TreeItem<String> selectedItem, CodeArea
+            fileContentTextArea, ResourceBundle bundle) {
         if (selectedItem != null) {
             final String filePath = selectedItem.getValue();
             if (Files.isRegularFile(Paths.get(filePath))) {
                 try {
-                    if (Files.size(Paths.get(filePath)) > FIZE_SIZE_LIMIT) {
+                    if(largeFileModeCheckBox.isSelected()) {
+                        Platform.runLater(() -> {
+                            fileContentTextArea.replaceText(FileUtils.getLargeFileContent(filePath));
+                        });
+                        return;
+                    }
+
+                    long fileSize = Files.size(Paths.get(filePath));
+                    if (fileSize > FileUtils.FIZE_SIZE_LIMIT) {
+                        DialogWindows.showInformationAlert(String.format("Будет открыт файл размером: %d MB%nВоспользуйтесь стрелками, чтобы просматривать его частями по 50MB", fileSize / FileUtils.ONE_MB));
                         String filePageContent = FileUtils.getNextPageContent(filePath);
                         if (!filePageContent.isEmpty()) {
                             Platform.runLater(() -> {

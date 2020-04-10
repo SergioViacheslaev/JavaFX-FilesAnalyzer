@@ -80,13 +80,13 @@
          </font>
       </RadioButton>
       <TabPane fx:id="resultsTabPane" layoutX="3.0" layoutY="214.0" prefHeight="452.0" prefWidth="1029.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="214.0" />
-      <AnchorPane layoutX="719.0" layoutY="176.0" prefHeight="43.0" prefWidth="279.0" AnchorPane.bottomAnchor="549.0" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="176.0">
+      <AnchorPane layoutX="506.0" layoutY="176.0" prefHeight="43.0" prefWidth="492.0" AnchorPane.bottomAnchor="549.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="176.0">
          <children>
-            <CheckBox fx:id="oneTabModeCheckBox" disable="true" layoutX="58.0" layoutY="14.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="110.0" selected="true" text="OneTab Mode">
+            <CheckBox fx:id="oneTabModeCheckBox" disable="true" layoutX="111.0" layoutY="14.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="110.0" selected="true" text="OneTab Mode">
                <font>
                   <Font name="Aver" size="13.0" />
                </font></CheckBox>
-            <Button fx:id="readBackButton" contentDisplay="GRAPHIC_ONLY" disable="true" graphicTextGap="1.0" layoutX="170.0" layoutY="9.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="32.0">
+            <Button fx:id="readBackButton" contentDisplay="GRAPHIC_ONLY" disable="true" graphicTextGap="1.0" layoutX="358.0" layoutY="9.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="32.0">
                <graphic>
                   <ImageView fitHeight="20.0" fitWidth="44.0" pickOnBounds="true">
                      <image>
@@ -98,7 +98,7 @@
                   <Insets />
                </opaqueInsets>
             </Button>
-            <Button fx:id="readForwardButton" contentDisplay="GRAPHIC_ONLY" disable="true" graphicTextGap="1.0" layoutX="236.0" layoutY="9.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="32.0">
+            <Button fx:id="readForwardButton" contentDisplay="GRAPHIC_ONLY" disable="true" graphicTextGap="1.0" layoutX="424.0" layoutY="9.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="32.0">
                <graphic>
                   <ImageView fitHeight="20.0" fitWidth="44.0" pickOnBounds="true">
                      <image>
@@ -110,6 +110,11 @@
                   <Insets />
                </opaqueInsets>
             </Button>
+            <CheckBox fx:id="largeFileModeCheckBox" layoutX="225.0" layoutY="14.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="110.0" text="LargeFile Mode">
+               <font>
+                  <Font name="Aver" size="13.0" />
+               </font>
+            </CheckBox>
          </children>
       </AnchorPane>
    </children>

@@ -15,6 +15,8 @@ import java.util.Scanner;
  * @author Sergei Viacheslaev
  */
 public class FileUtils {
+    public static final long FIZE_SIZE_LIMIT = 104857600L; //100 MB
+    public static final long ONE_MB = 1048576; //1 MB
     private static final long fileSizeLimit = 104857600L; //100 MB
     //    private static final long fileSizeLimit = 52_428_800L; //100 MB
     public static long skipBytes = 0L;
@@ -22,7 +24,7 @@ public class FileUtils {
     public static String getFileContent(String filePath) throws IOException {
 
         if (Files.size(Paths.get(filePath)) > fileSizeLimit) {
-           return getNextPageContent(filePath);
+            return getNextPageContent(filePath);
         } else {
 //            File file = new File(filePath);
 //            return org.apache.commons.io.FileUtils.readFileToString(file, StandardCharsets.UTF_8);
@@ -33,6 +35,18 @@ public class FileUtils {
                 return "";
             }
         }
+
+    }
+
+    @SneakyThrows
+    public static String getLargeFileContent(String filepath) {
+        byte[] buffer = Files.readAllBytes(Paths.get(filepath));
+
+        if (buffer.length > 0) {
+            return new String(buffer, StandardCharsets.UTF_8);
+        }
+
+        return "";
 
     }
 
@@ -100,12 +114,9 @@ public class FileUtils {
 
 
     @SneakyThrows
-    public static String getNextPageContent(String filePath)   {
-//        StringBuilder sb = new StringBuilder((int) Files.size(Paths.get(filePath)));
-
-
+    public static String getNextPageContent(String filePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath, StandardCharsets.UTF_8))) {
-            char[] buffer = new char[8 * 1024 * 1024];
+            char[] buffer = new char[25 * 1024 * 1024];
             br.skip(skipBytes);
 
             int bytesRead;

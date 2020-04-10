@@ -33,8 +33,8 @@ public class AppConfig {
         primaryStage.getIcons().add(new Image("static/images/logo.png"));
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);
-        primaryStage.setWidth(960);
-        primaryStage.setHeight(720);
+        primaryStage.setWidth(1024);
+        primaryStage.setHeight(768);
         primaryStage.setTitle(bundle.getString("appTitle"));
         primaryStage.getScene().getStylesheets().add( "/static/css/text-labels.css");
         primaryStage.getScene().getStylesheets().add( "/static/css/text-area.css");

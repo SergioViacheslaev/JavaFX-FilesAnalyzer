@@ -9,6 +9,8 @@ import javafx.application.Application;
  * --module-path C:\Java\javafx-sdk-14\lib --add-modules javafx.controls,javafx.fxml
  * Choose your right path to javaFX sdk lib folder.
  *
+ * Optimize work with setting JVM-heap size: -Xms256m -Xmx1024m
+ *
  * @author Sergei Viacheslaev
  */
 public class Main {
