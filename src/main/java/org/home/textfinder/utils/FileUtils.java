@@ -2,7 +2,10 @@ package org.home.textfinder.utils;
 
 import lombok.SneakyThrows;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -15,28 +18,23 @@ import java.util.Scanner;
  * @author Sergei Viacheslaev
  */
 public class FileUtils {
-    public static final long FIZE_SIZE_LIMIT = 104857600L; //100 MB
-    public static final long ONE_MB = 1048576; //1 MB
-    private static final long fileSizeLimit = 104857600L; //100 MB
-    //    private static final long fileSizeLimit = 52_428_800L; //100 MB
-    public static long skipBytes = 0L;
+    public static final long ONE_MB = 1048576;
+    public static final long ONE_KB = 1024;
+    public static final long FIZE_SIZE_LIMIT = 100 * ONE_MB;
+    public static final int FILE_PAGE_LIMIT = 50 * 1024 * 1024;
+    public static int lastPageSize = 0;
+    public static long previousPagePointer = 0;
+    public static long nextPagePointer = 0;
 
     public static String getFileContent(String filePath) throws IOException {
-
-        if (Files.size(Paths.get(filePath)) > fileSizeLimit) {
-            return getNextPageContent(filePath);
+        final List<String> contentStrings = Files.readAllLines(Paths.get(filePath), StandardCharsets.UTF_8);
+        if (!contentStrings.isEmpty()) {
+            return String.join("\n", contentStrings);
         } else {
-//            File file = new File(filePath);
-//            return org.apache.commons.io.FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-            final List<String> contentStrings = Files.readAllLines(Paths.get(filePath), StandardCharsets.UTF_8);
-            if (!contentStrings.isEmpty()) {
-                return String.join("\n", contentStrings);
-            } else {
-                return "";
-            }
+            return "";
         }
-
     }
+
 
     @SneakyThrows
     public static String getLargeFileContent(String filepath) {
@@ -50,108 +48,79 @@ public class FileUtils {
 
     }
 
- /*   public static String getFileContent(String filePath) throws IOException {
-        StringBuilder sb = new StringBuilder((int) Files.size(Paths.get(filePath)));
-        try(BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath,StandardCharsets.UTF_8))) {
-            char[] buffer = new char[1024 * 1024];
-            bufferedReader.skip()
 
+    @SneakyThrows
+    public static Map<Boolean, String> getPreviousPageContent(String filePath) {
+        boolean hasPreviousPage = true;
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath, StandardCharsets.UTF_8))) {
+            char[] buffer = new char[FILE_PAGE_LIMIT];
 
-            int bytesRead;
-            while ((bytesRead = bufferedReader.read(buffer)) != -1)
-            {
-                    sb.append(buffer);
+            if (br.skip(previousPagePointer) == 0) {
+                hasPreviousPage = false;
             }
 
+            int readBytes = br.read(buffer);
+            nextPagePointer = previousPagePointer + readBytes;
+            previousPagePointer = previousPagePointer - (lastPageSize + readBytes);
+            if (previousPagePointer < 0) {
+                previousPagePointer = 0;
+            }
+            lastPageSize = readBytes;
+
+            if (readBytes > 0) {
+                return Collections.singletonMap(hasPreviousPage, new String(buffer));
+            }
         }
 
-        return sb.toString();
-
-    }*/
-
-
-    public static Map<String, Long> getPreviousPageContent(String filePath, long previousPageOffset) throws IOException {
-        FileTreeUtils.previousPageOffset = previousPageOffset - (8 * 1024 * 1024);
-        try (RandomAccessFile raf = new RandomAccessFile(filePath, "r")) {
-
-            raf.seek(previousPageOffset);
-
-            byte[] buffer = new byte[8 * 1024 * 1024];
-            raf.read(buffer);
-
-            FileTreeUtils.nextPageOffset = raf.getFilePointer();
-            return Collections.singletonMap(new String(buffer, StandardCharsets.UTF_8), raf.getFilePointer());
-        }
-
+        return Collections.emptyMap();
     }
-/*
-    public static Map<String, Long> getNextPageContent(String filePath, long nextPageOffset, StyleClassedTextArea textArea) throws IOException {
-
-        FileTreeUtils.previousPageOffset = nextPageOffset - (2097152);
-
-
-        try (RandomAccessFile raf = new RandomAccessFile(filePath, "r");
-        ) {
-            StringBuilder sb = new StringBuilder(2097152);
-
-            raf.seek(nextPageOffset);
-
-            while (sb.length() <= 2097152) {
-                sb.append(String.format("%s%n", raf.readLine()));
-            }
-
-            textArea.replaceText(sb.toString());
-
-            FileTreeUtils.nextPageOffset = raf.getFilePointer();
-
-
-            return Collections.emptyMap();
-//            return Collections.singletonMap(new String(buffer, StandardCharsets.UTF_8), raf.getFilePointer());
-        }
-
-
-    }*/
 
 
     @SneakyThrows
-    public static String getNextPageContent(String filePath) {
+    public static Map<Boolean, String> getNextPageContent(String filePath) {
+        boolean hasNextPage = true;
         try (BufferedReader br = new BufferedReader(new FileReader(filePath, StandardCharsets.UTF_8))) {
-            char[] buffer = new char[25 * 1024 * 1024];
-            br.skip(skipBytes);
+            char[] buffer = new char[FILE_PAGE_LIMIT];
 
-            int bytesRead;
-            bytesRead = br.read(buffer);
+            previousPagePointer = nextPagePointer - lastPageSize;
 
+            br.skip(nextPagePointer);
+
+            int bytesRead = br.read(buffer);
+            nextPagePointer += bytesRead;
+            lastPageSize = bytesRead;
+
+            if (!br.ready()) {
+                hasNextPage = false;
+            }
+            if (bytesRead > 0) {
+                return Collections.singletonMap(hasNextPage, new String(buffer));
+            }
+        }
+
+        return Collections.emptyMap();
+
+    }
+
+    @SneakyThrows
+    public static String getFirstPageContent(String filePath) {
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath, StandardCharsets.UTF_8))) {
+            char[] buffer = new char[FILE_PAGE_LIMIT];
+
+            int bytesRead = br.read(buffer);
+            nextPagePointer = bytesRead;
+            lastPageSize = bytesRead;
+            previousPagePointer = 0;
 
             if (bytesRead > 0) {
-                skipBytes += bytesRead;
                 return new String(buffer);
             }
-
-
         }
 
         return "";
 
     }
 
-
-
-
-  /*  public static String getFileContent(String filePath) throws IOException {
-        try (RandomAccessFile reader = new RandomAccessFile(filePath, "r");
-            FileChannel channel = reader.getChannel()) {
-
-            ByteBuffer buffer = ByteBuffer.allocate((int) channel.size());
-
-            channel.read(buffer);
-            String fileContent = new String(buffer.array(), StandardCharsets.UTF_8);
-
-            buffer.clear();
-
-            return fileContent;
-        }
-    }*/
 
     @SneakyThrows
     public static boolean checkFileContainsText(File file, String searchedText) {

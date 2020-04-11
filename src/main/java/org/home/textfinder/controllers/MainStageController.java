@@ -9,6 +9,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -28,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -46,7 +49,12 @@ public class MainStageController implements Observable {
     private ExecutorService executorService = Executors.newFixedThreadPool(4);
     private String currentFilePath;
 
-
+    @FXML
+    private AnchorPane controlPanel;
+    @FXML
+    private Text fileStatusText;
+    @FXML
+    private Text pageStatusText;
     @FXML
     private Button searchButton;
     @FXML
@@ -100,11 +108,13 @@ public class MainStageController implements Observable {
 
     @FXML
     private void initialize() {
+
+
         largeFileModeCheckBox.setOnAction(event -> {
             final CheckBox largeFile = (CheckBox) event.getSource();
             if (largeFile.isSelected()) {
 
-                DialogWindows.showInformationAlert("В данном режиме файл любого размера загружается полностью в ОЗУ, отслеживайте наличие свободной памяти и параметры запуска JVM: -Xms -Xmx");
+                DialogWindows.showInformationAlert("В данном режиме: файл любого размера загружается полностью в ОЗУ, отслеживайте наличие свободной памяти и параметры запуска JVM: -Xms -Xmx");
                 resultsTabPane.getTabs().remove(1, resultsTabPane.getTabs().size());
                 oneTabModeCheckBox.setSelected(true);
                 oneTabModeCheckBox.setDisable(true);
@@ -140,18 +150,38 @@ public class MainStageController implements Observable {
         searchButton.setDisable(false);
 
 
-        readForwardButton.setOnAction(event ->
-
-        {
+        readForwardButton.setOnAction(event -> {
             final Tab selectedTab = resultsTabPane.getSelectionModel().getSelectedItem();
             CodeArea codeArea = performFileViewArea(selectedTab);
-            codeArea.appendText(FileUtils.getNextPageContent(currentFilePath));
+            Map<Boolean, String> fileContent = FileUtils.getNextPageContent(currentFilePath);
+            if (!fileContent.isEmpty()) {
+                boolean hasMorePages = fileContent.keySet().iterator().next();
+                codeArea.appendText(fileContent.get(hasMorePages));
+                if (!hasMorePages) {
+                    readForwardButton.setDisable(true);
+                }
+                readBackButton.setDisable(false);
+            }
         });
+        readForwardButton.setTooltip(new Tooltip("Загрузить следующие 50 MB"));
+
+        readBackButton.setOnAction(event -> {
+            final Tab selectedTab = resultsTabPane.getSelectionModel().getSelectedItem();
+            CodeArea codeArea = performFileViewArea(selectedTab);
+            Map<Boolean, String> fileContent = FileUtils.getPreviousPageContent(currentFilePath);
+            if (!fileContent.isEmpty()) {
+                boolean hasPreviousPage = fileContent.keySet().iterator().next();
+                codeArea.appendText(fileContent.get(hasPreviousPage));
+                if (!hasPreviousPage) {
+                    readBackButton.setDisable(true);
+                }
+                readForwardButton.setDisable(false);
+            }
+        });
+        readBackButton.setTooltip(new Tooltip("Загрузить предыдущие 50 MB"));
 
 
-        searchButton.setOnAction(event ->
-
-                startSearchTask());
+        searchButton.setOnAction(event -> startSearchTask());
 
 
     }
@@ -306,25 +336,31 @@ public class MainStageController implements Observable {
             final String filePath = selectedItem.getValue();
             if (Files.isRegularFile(Paths.get(filePath))) {
                 try {
-                    if(largeFileModeCheckBox.isSelected()) {
+                    long fileSize = Files.size(Paths.get(filePath));
+                    fileStatusText.setText(StatusMessages.getFileSizeStatus(fileSize));
+
+
+                    if (largeFileModeCheckBox.isSelected()) {
                         Platform.runLater(() -> {
                             fileContentTextArea.replaceText(FileUtils.getLargeFileContent(filePath));
                         });
                         return;
                     }
 
-                    long fileSize = Files.size(Paths.get(filePath));
                     if (fileSize > FileUtils.FIZE_SIZE_LIMIT) {
-                        DialogWindows.showInformationAlert(String.format("Будет открыт файл размером: %d MB%nВоспользуйтесь стрелками, чтобы просматривать его частями по 50MB", fileSize / FileUtils.ONE_MB));
-                        String filePageContent = FileUtils.getNextPageContent(filePath);
+                        pageStatusText.setText(String.format("Страница %d из %d", 1, fileSize / FileUtils.FILE_PAGE_LIMIT));
+                        String filePageContent= FileUtils.getFirstPageContent(filePath);
                         if (!filePageContent.isEmpty()) {
+                            readForwardButton.setDisable(false);
+                            readBackButton.setDisable(true);
                             Platform.runLater(() -> {
                                 fileContentTextArea.replaceText(filePageContent);
                                 fileContentTextArea.setVisible(true);
                             });
                         }
-                        readForwardButton.setDisable(false);
                     } else {
+                        readForwardButton.setDisable(true);
+                        readBackButton.setDisable(true);
                         String fileFullContent = FileUtils.getFileContent(filePath);
                         if (!fileFullContent.isEmpty()) {
                             Platform.runLater(() -> {
