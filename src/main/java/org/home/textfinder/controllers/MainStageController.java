@@ -155,6 +155,7 @@ public class MainStageController implements Observable {
             CodeArea codeArea = performFileViewArea(selectedTab);
             Map<Boolean, String> fileContent = FileUtils.getNextPageContent(currentFilePath);
             if (!fileContent.isEmpty()) {
+                pageStatusText.setText(StatusMessages.getFilePagesStatus());
                 boolean hasMorePages = fileContent.keySet().iterator().next();
                 codeArea.appendText(fileContent.get(hasMorePages));
                 if (!hasMorePages) {
@@ -170,6 +171,7 @@ public class MainStageController implements Observable {
             CodeArea codeArea = performFileViewArea(selectedTab);
             Map<Boolean, String> fileContent = FileUtils.getPreviousPageContent(currentFilePath);
             if (!fileContent.isEmpty()) {
+                pageStatusText.setText(StatusMessages.getFilePagesStatus());
                 boolean hasPreviousPage = fileContent.keySet().iterator().next();
                 codeArea.appendText(fileContent.get(hasPreviousPage));
                 if (!hasPreviousPage) {
@@ -348,8 +350,9 @@ public class MainStageController implements Observable {
                     }
 
                     if (fileSize > FileUtils.FIZE_SIZE_LIMIT) {
-                        pageStatusText.setText(String.format("Страница %d из %d", 1, fileSize / FileUtils.FILE_PAGE_LIMIT));
+
                         String filePageContent= FileUtils.getFirstPageContent(filePath);
+                        pageStatusText.setText(StatusMessages.getFilePagesStatus());
                         if (!filePageContent.isEmpty()) {
                             readForwardButton.setDisable(false);
                             readBackButton.setDisable(true);

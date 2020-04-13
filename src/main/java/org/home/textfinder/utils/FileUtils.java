@@ -25,6 +25,8 @@ public class FileUtils {
     public static int lastPageSize = 0;
     public static long previousPagePointer = 0;
     public static long nextPagePointer = 0;
+    public static long totalPagesCount = 0;
+    public static int currentPageNumber = 1;
 
     public static String getFileContent(String filePath) throws IOException {
         final List<String> contentStrings = Files.readAllLines(Paths.get(filePath), StandardCharsets.UTF_8);
@@ -68,6 +70,7 @@ public class FileUtils {
             lastPageSize = readBytes;
 
             if (readBytes > 0) {
+                currentPageNumber--;
                 return Collections.singletonMap(hasPreviousPage, new String(buffer));
             }
         }
@@ -94,6 +97,7 @@ public class FileUtils {
                 hasNextPage = false;
             }
             if (bytesRead > 0) {
+                currentPageNumber++;
                 return Collections.singletonMap(hasNextPage, new String(buffer));
             }
         }
@@ -111,6 +115,8 @@ public class FileUtils {
             nextPagePointer = bytesRead;
             lastPageSize = bytesRead;
             previousPagePointer = 0;
+            currentPageNumber = 1;
+            totalPagesCount = countTotalFilePages(filePath);
 
             if (bytesRead > 0) {
                 return new String(buffer);
@@ -137,6 +143,20 @@ public class FileUtils {
         }
 
         return isContentFound;
+    }
+
+    @SneakyThrows
+    private static long countTotalFilePages(String filePath) {
+        long fileSize = Files.size(Paths.get(filePath));
+        long pagesCount;
+
+        if (fileSize % FileUtils.FILE_PAGE_LIMIT == 0) {
+            pagesCount = fileSize / FileUtils.FILE_PAGE_LIMIT;
+        } else {
+            pagesCount = (fileSize / FileUtils.FILE_PAGE_LIMIT) + 1;
+        }
+
+        return pagesCount;
     }
 
 }

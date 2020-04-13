@@ -117,11 +117,11 @@
             </CheckBox>
          </children>
       </AnchorPane>
-      <Text fx:id="fileStatusText" layoutX="257.0" layoutY="180.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="170.0">
+      <Text fx:id="fileStatusText" layoutX="340.0" layoutY="224.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="170.0">
          <font>
             <Font name="Aver" size="12.0" />
          </font></Text>
-      <Text fx:id="pageStatusText" layoutX="667.0" layoutY="144.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="170.0">
+      <Text fx:id="pageStatusText" layoutX="518.0" layoutY="223.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="140.0">
          <font>
             <Font name="Aver" size="12.0" />
          </font>
