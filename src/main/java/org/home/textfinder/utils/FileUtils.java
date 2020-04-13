@@ -1,6 +1,7 @@
 package org.home.textfinder.utils;
 
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -136,7 +137,7 @@ public class FileUtils {
             while (scanner.hasNextLine() && !isContentFound) {
                 String contentLine = scanner.nextLine();
 
-                if (contentLine.contains(searchedText)) {
+                if (StringUtils.containsIgnoreCase(contentLine,searchedText)) {
                     isContentFound = true;
                 }
             }

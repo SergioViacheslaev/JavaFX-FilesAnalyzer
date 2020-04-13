@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
@@ -80,9 +80,9 @@
          </font>
       </RadioButton>
       <TabPane fx:id="resultsTabPane" layoutX="3.0" layoutY="211.0" prefHeight="452.0" prefWidth="1029.0" AnchorPane.bottomAnchor="9.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="211.0" />
-      <AnchorPane fx:id="controlPanel" layoutX="506.0" layoutY="176.0" prefHeight="43.0" prefWidth="492.0" AnchorPane.bottomAnchor="549.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="176.0">
+      <AnchorPane fx:id="controlPanel" layoutX="485.0" layoutY="176.0" prefHeight="43.0" prefWidth="549.0" AnchorPane.bottomAnchor="549.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="176.0">
          <children>
-            <CheckBox fx:id="oneTabModeCheckBox" disable="true" layoutX="111.0" layoutY="14.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="110.0" selected="true" text="OneTab Mode">
+            <CheckBox fx:id="oneTabModeCheckBox" disable="true" layoutX="48.0" layoutY="14.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="110.0" selected="true" text="OneTab Mode">
                <font>
                   <Font name="Aver" size="13.0" />
                </font></CheckBox>
@@ -110,11 +110,38 @@
                   <Insets />
                </opaqueInsets>
             </Button>
-            <CheckBox fx:id="largeFileModeCheckBox" layoutX="225.0" layoutY="14.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="110.0" text="LargeFile Mode">
+            <CheckBox fx:id="largeFileModeCheckBox" layoutX="162.0" layoutY="14.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="110.0" text="LargeFile Mode">
                <font>
                   <Font name="Aver" size="13.0" />
                </font>
             </CheckBox>
+            <Button fx:id="exitPageReadingModeButton" contentDisplay="GRAPHIC_ONLY" disable="true" graphicTextGap="1.0" layoutX="493.0" layoutY="6.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="33.0">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <graphic>
+                  <ImageView fitHeight="19.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/stopReadingMode.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="searchTextButton" contentDisplay="GRAPHIC_ONLY" disable="true" focusTraversable="false" graphicTextGap="1.0" layoutX="290.0" layoutY="6.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="60.0">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <graphic>
+                  <ImageView fitHeight="31.0" fitWidth="53.0" pickOnBounds="true">
+                     <image>
+                        <Image url="@../images/searchTextButton.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <padding>
+                  <Insets bottom="-2.0" left="-2.0" right="-2.0" top="-2.0" />
+               </padding>
+            </Button>
          </children>
       </AnchorPane>
       <Text fx:id="fileStatusText" layoutX="340.0" layoutY="224.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="170.0">

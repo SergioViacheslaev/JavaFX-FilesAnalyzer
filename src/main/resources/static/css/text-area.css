@@ -9,3 +9,7 @@
 .styled-text-area .paragraph-box:first-paragraph .paragraph-text {
     -fx-padding: 5px 5px 0 5px;
 }
+
+.styled-text-area .foundText {
+    -rtfx-background-color: lawngreen;
+}

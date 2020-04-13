@@ -16,6 +16,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
@@ -28,10 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -58,6 +56,8 @@ public class MainStageController implements Observable {
     @FXML
     private Button searchButton;
     @FXML
+    private Button exitPageReadingModeButton;
+    @FXML
     private TextField searchPathTextField;
     @FXML
     private TextField fileExtensionTextField;
@@ -79,6 +79,9 @@ public class MainStageController implements Observable {
     private CheckBox oneTabModeCheckBox;
     @FXML
     private CheckBox largeFileModeCheckBox;
+    @FXML
+    private Button searchTextButton;
+
 
 
     @Override
@@ -108,6 +111,36 @@ public class MainStageController implements Observable {
 
     @FXML
     private void initialize() {
+        searchTextButton.setOnAction(event -> {
+            String searchText = fileContentSearchTextField.getText();
+            if(!searchText.isEmpty()) {
+                final Tab selectedTab = resultsTabPane.getSelectionModel().getSelectedItem();
+                final SplitPane currentPane = (SplitPane) selectedTab.getContent();
+                final VirtualizedScrollPane<CodeArea> scrollPane = (VirtualizedScrollPane<CodeArea>) currentPane.getItems().get(1);
+                final CodeArea fileContentArea = scrollPane.getContent();
+                int caretPosition = StringUtils.indexOfIgnoreCase(fileContentArea.getText(),searchText);
+                if(caretPosition>0) {
+                    fileContentArea.showCaretProperty();
+                    fileContentArea.moveTo(caretPosition);
+                    fileContentArea.requestFollowCaret();
+                    fileContentArea.setStyle(caretPosition,caretPosition + searchText.length(), Collections.singletonList("foundText"));
+                }
+            }
+
+        });
+
+
+
+        exitPageReadingModeButton.setOnAction(event -> {
+            oneTabModeCheckBox.setDisable(false);
+            largeFileModeCheckBox.setDisable(false);
+            readForwardButton.setDisable(true);
+            readBackButton.setDisable(true);
+            exitPageReadingModeButton.setDisable(true);
+            searchButton.setDisable(false);
+            searchPathTextField.setDisable(false);
+        });
+        exitPageReadingModeButton.setTooltip(new Tooltip("Завершить постраничный просмотр"));
 
 
         largeFileModeCheckBox.setOnAction(event -> {
@@ -212,8 +245,10 @@ public class MainStageController implements Observable {
         final RadioButton currentButton = (RadioButton) event.getSource();
         if (currentButton.isSelected()) {
             fileContentSearchTextField.setDisable(false);
+            searchTextButton.setDisable(false);
         } else {
             fileContentSearchTextField.setDisable(true);
+            searchTextButton.setDisable(true);
         }
 
     }
@@ -261,7 +296,7 @@ public class MainStageController implements Observable {
             TreeItem<String> rootItem = new TreeItem<>(searchPath, new ImageView(Icons.DIRECTORY_EXPANDED.getImage()));
             rootItem.setExpanded(true);
 
-            if (searchPath.isEmpty() && !searchCatalog.exists()) {
+            if (searchPath.isEmpty() || !searchCatalog.exists()) {
                 DialogWindows.showInformationAlert("Путь указан неверно !");
                 return;
             }
@@ -350,12 +385,21 @@ public class MainStageController implements Observable {
                     }
 
                     if (fileSize > FileUtils.FIZE_SIZE_LIMIT) {
+                        if(!oneTabModeCheckBox.isSelected()) {
+                            DialogWindows.showInformationAlert("Постраничный просмотр файлов больше 100 MB доступен только в режиме одной вкладки");
+                            return;
+                        }
 
                         String filePageContent= FileUtils.getFirstPageContent(filePath);
                         pageStatusText.setText(StatusMessages.getFilePagesStatus());
                         if (!filePageContent.isEmpty()) {
+                            oneTabModeCheckBox.setDisable(true);
+                            largeFileModeCheckBox.setDisable(true);
+                            exitPageReadingModeButton.setDisable(false);
                             readForwardButton.setDisable(false);
                             readBackButton.setDisable(true);
+                            searchButton.setDisable(true);
+                            searchPathTextField.setDisable(true);
                             Platform.runLater(() -> {
                                 fileContentTextArea.replaceText(filePageContent);
                                 fileContentTextArea.setVisible(true);
