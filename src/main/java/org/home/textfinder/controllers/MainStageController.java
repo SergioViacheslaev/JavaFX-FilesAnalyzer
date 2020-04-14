@@ -124,9 +124,9 @@ public class MainStageController implements Observable {
 
                 SearchedTextData searchedTextData = tabsSearchTextMap.get(selectedTab);
                 String text = searchedTextData.getText();
-                if(!searchText.equals(text)) {
-                   searchedTextData.setText(searchText);
-                   searchedTextData.setPosition(0);
+                if (!searchText.equals(text)) {
+                    searchedTextData.setText(searchText);
+                    searchedTextData.setPosition(0);
                 }
 
                 int caretPosition = StringUtils.indexOfIgnoreCase(fileContentArea.getText(), searchText, searchedTextData.getPosition());
@@ -199,7 +199,7 @@ public class MainStageController implements Observable {
 
 
         //todo: Temp for testing
-        searchPathTextField.setText("D:\\Downloads\\HDFS_2");
+        searchPathTextField.setText("D:\\Downloads\\HDFS_2\\test");
         searchButton.setDisable(false);
 
 
@@ -309,6 +309,8 @@ public class MainStageController implements Observable {
 
     private void startSearchTask() {
         Runnable searchTask = () -> {
+            final Tab currentTab;
+            final String tabTitle;
             TreeView<String> searchResultsView = new TreeView<>();
             String searchText = fileContentSearchTextField.getText().trim();
             String searchPath = searchPathTextField.getText();
@@ -330,7 +332,14 @@ public class MainStageController implements Observable {
             }
 
             if (!oneTabModeCheckBox.isSelected()) {
-                performResultsViewAndListeners(searchResultsView);
+                currentTab = performResultsViewAndListeners(searchResultsView);
+                tabTitle = currentTab.getText();
+                Platform.runLater(() -> currentTab.setText("Идет поиск..."));
+            } else {
+                currentTab = resultsTabPane.getSelectionModel().getSelectedItem();
+                currentTab.setDisable(true);
+                tabTitle = currentTab.getText();
+                Platform.runLater(() -> currentTab.setText("Идет поиск..."));
             }
 
             if (enableFileMaskRadioButton.isSelected()) {
@@ -346,10 +355,20 @@ public class MainStageController implements Observable {
                 final SplitPane splitPane = (SplitPane) selectedTab.getContent();
                 TreeView<String> firstSearchFilesView = (TreeView<String>) splitPane.getItems().get(0);
                 oneTabModeCheckBox.setDisable(false);
-                Platform.runLater(() -> firstSearchFilesView.setRoot(rootItem));
+                Platform.runLater(() -> {
+                    firstSearchFilesView.setRoot(rootItem);
+                    selectedTab.setText(tabTitle);
+                    currentTab.setDisable(false);
+                });
             } else {
-                Platform.runLater(() -> searchResultsView.setRoot(rootItem));
+                Platform.runLater(() -> {
+                    searchResultsView.setRoot(rootItem);
+                    currentTab.setText(tabTitle);
+                    currentTab.setDisable(false);
+                });
+
             }
+
 
         };
         executorService.execute(searchTask);
@@ -357,12 +376,13 @@ public class MainStageController implements Observable {
     }
 
 
-    private void performResultsViewAndListeners(TreeView<String> searchResultsView) {
+    private Tab performResultsViewAndListeners(TreeView<String> searchResultsView) {
         CodeArea fileContentArea = new CodeArea();
         fileContentArea.setVisible(false);
         fileContentArea.setParagraphGraphicFactory(LineNumberFactory.get(fileContentArea));
         VirtualizedScrollPane<CodeArea> scrollPane = new VirtualizedScrollPane<>(fileContentArea);
         Tab newTab = TabPaneUtils.addTab(resultsTabPane);
+        newTab.setDisable(true);
         tabsSearchTextMap.put(newTab, new SearchedTextData());
 
         SplitPane splitPane = new SplitPane();
@@ -386,6 +406,7 @@ public class MainStageController implements Observable {
         });
 
 
+        return newTab;
     }
 
     private void showSelectedFile(TreeItem<String> selectedItem, CodeArea
