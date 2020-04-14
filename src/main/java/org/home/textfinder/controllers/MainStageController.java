@@ -23,6 +23,7 @@ import org.fxmisc.richtext.LineNumberFactory;
 import org.home.textfinder.api.Observable;
 import org.home.textfinder.api.Observer;
 import org.home.textfinder.config.AppConfig;
+import org.home.textfinder.model.SearchedTextData;
 import org.home.textfinder.utils.*;
 
 import java.io.File;
@@ -40,6 +41,7 @@ import static org.home.textfinder.utils.DialogWindows.showInformationAlert;
 public class MainStageController implements Observable {
     public static final double DIVIDER_POSITION = 0.24;
     public static final int CODE_AREA_INDEX = 1;
+    private final WeakHashMap<Tab, SearchedTextData> tabsSearchTextMap = new WeakHashMap<>();
     private final DirectoryChooser directoryChooser = new DirectoryChooser();
     private final List<Observer> observers = new ArrayList<>();
     private AppConfig appConfig;
@@ -83,7 +85,6 @@ public class MainStageController implements Observable {
     private Button searchTextButton;
 
 
-
     @Override
     public void addObserver(Observer observer) {
         this.observers.add(observer);
@@ -113,22 +114,41 @@ public class MainStageController implements Observable {
     private void initialize() {
         searchTextButton.setOnAction(event -> {
             String searchText = fileContentSearchTextField.getText();
-            if(!searchText.isEmpty()) {
+            if (!searchText.isEmpty()) {
+                System.out.println(tabsSearchTextMap + "\n");
+
                 final Tab selectedTab = resultsTabPane.getSelectionModel().getSelectedItem();
                 final SplitPane currentPane = (SplitPane) selectedTab.getContent();
                 final VirtualizedScrollPane<CodeArea> scrollPane = (VirtualizedScrollPane<CodeArea>) currentPane.getItems().get(1);
                 final CodeArea fileContentArea = scrollPane.getContent();
-                int caretPosition = StringUtils.indexOfIgnoreCase(fileContentArea.getText(),searchText);
-                if(caretPosition>0) {
+
+                SearchedTextData searchedTextData = tabsSearchTextMap.get(selectedTab);
+                String text = searchedTextData.getText();
+                if(!searchText.equals(text)) {
+                   searchedTextData.setText(searchText);
+                   searchedTextData.setPosition(0);
+                }
+
+                int caretPosition = StringUtils.indexOfIgnoreCase(fileContentArea.getText(), searchText, searchedTextData.getPosition());
+                if (caretPosition > 0) {
                     fileContentArea.showCaretProperty();
-                    fileContentArea.moveTo(caretPosition);
+                    searchedTextData.setPosition(caretPosition + searchText.length());
+                    fileContentArea.moveTo(caretPosition + searchText.length());
                     fileContentArea.requestFollowCaret();
-                    fileContentArea.setStyle(caretPosition,caretPosition + searchText.length(), Collections.singletonList("foundText"));
+                    fileContentArea.setStyle(caretPosition, caretPosition + searchText.length(), Collections.singletonList("foundText"));
+
+                    tabsSearchTextMap.put(selectedTab, searchedTextData);
+                } else {
+                    fileContentArea.showCaretProperty();
+                    DialogWindows.showInformationAlert("Больше совпадений не найдено !");
+                    searchedTextData.setPosition(0);
+                    tabsSearchTextMap.put(selectedTab, searchedTextData);
+                    fileContentArea.moveTo(0);
+                    fileContentArea.requestFollowCaret();
                 }
             }
 
         });
-
 
 
         exitPageReadingModeButton.setOnAction(event -> {
@@ -343,6 +363,7 @@ public class MainStageController implements Observable {
         fileContentArea.setParagraphGraphicFactory(LineNumberFactory.get(fileContentArea));
         VirtualizedScrollPane<CodeArea> scrollPane = new VirtualizedScrollPane<>(fileContentArea);
         Tab newTab = TabPaneUtils.addTab(resultsTabPane);
+        tabsSearchTextMap.put(newTab, new SearchedTextData());
 
         SplitPane splitPane = new SplitPane();
         splitPane.getItems().addAll(searchResultsView, scrollPane);
@@ -385,12 +406,12 @@ public class MainStageController implements Observable {
                     }
 
                     if (fileSize > FileUtils.FIZE_SIZE_LIMIT) {
-                        if(!oneTabModeCheckBox.isSelected()) {
+                        if (!oneTabModeCheckBox.isSelected()) {
                             DialogWindows.showInformationAlert("Постраничный просмотр файлов больше 100 MB доступен только в режиме одной вкладки");
                             return;
                         }
 
-                        String filePageContent= FileUtils.getFirstPageContent(filePath);
+                        String filePageContent = FileUtils.getFirstPageContent(filePath);
                         pageStatusText.setText(StatusMessages.getFilePagesStatus());
                         if (!filePageContent.isEmpty()) {
                             oneTabModeCheckBox.setDisable(true);
