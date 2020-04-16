@@ -15,7 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-/**
+/**Gets file content, pages, check files has searched text.
+ *
  * @author Sergei Viacheslaev
  */
 public class FileUtils {
@@ -42,13 +43,10 @@ public class FileUtils {
     @SneakyThrows
     public static String getLargeFileContent(String filepath) {
         byte[] buffer = Files.readAllBytes(Paths.get(filepath));
-
         if (buffer.length > 0) {
             return new String(buffer, StandardCharsets.UTF_8);
         }
-
         return "";
-
     }
 
 
@@ -132,17 +130,14 @@ public class FileUtils {
     @SneakyThrows
     public static boolean checkFileContainsText(File file, String searchedText) {
         boolean isContentFound = false;
-
         try (Scanner scanner = new Scanner(file)) {
             while (scanner.hasNextLine() && !isContentFound) {
                 String contentLine = scanner.nextLine();
-
                 if (StringUtils.containsIgnoreCase(contentLine,searchedText)) {
                     isContentFound = true;
                 }
             }
         }
-
         return isContentFound;
     }
 

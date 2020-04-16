@@ -15,6 +15,6 @@ import javafx.application.Application;
  */
 public class Main {
     public static void main(String[] args) {
-        Application.launch(TextFinderApp.class, args);
+        Application.launch(LogAnalyzerApp.class, args);
     }
 }

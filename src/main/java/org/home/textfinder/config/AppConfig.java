@@ -9,9 +9,6 @@ import lombok.Setter;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-/**
- * @author Sergei Viacheslaev
- */
 @Getter
 @Setter
 public class AppConfig {
@@ -20,6 +17,7 @@ public class AppConfig {
     public static final String MENU_ABOUT_FXML_PATH = "/static/view/menuAbout.fxml";
     public static final Locale APP_LOCALE_RUSSIAN = new Locale("ru");
     public static final Locale APP_LOCALE_ENGLISH = new Locale("en");
+    public static final String FOUND_TEXT_STYLE = "foundText";
     private ResourceBundle bundle;
     private Stage primaryStage;
 

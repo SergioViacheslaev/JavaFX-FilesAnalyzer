@@ -10,6 +10,7 @@ import org.home.textfinder.api.Observable;
 import org.home.textfinder.api.Observer;
 import org.home.textfinder.config.AppConfig;
 import org.home.textfinder.controllers.MainStageController;
+import org.home.textfinder.utils.StatusMessages;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -19,14 +20,16 @@ import java.util.ResourceBundle;
 /**
  * JavaFX App
  */
-public class TextFinderApp extends Application implements Observer {
+public class LogAnalyzerApp extends Application implements Observer {
     private AppConfig config;
     private AnchorPane currentRootContainer;
 
     @Override
     public void start(Stage primaryStage) throws IOException {
+
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(AppConfig.MAIN_STAGE_FXML_PATH));
         fxmlLoader.setResources(ResourceBundle.getBundle("bundles.locale", AppConfig.APP_LOCALE_RUSSIAN));
+        StatusMessages.setBundle(fxmlLoader.getResources());
         currentRootContainer = fxmlLoader.load();
         Scene scene = new Scene(currentRootContainer);
         primaryStage.setScene(scene);
@@ -36,8 +39,7 @@ public class TextFinderApp extends Application implements Observer {
 
         MainStageController controller = fxmlLoader.getController();
         controller.setAppConfig(config);
-        controller.setBundle(fxmlLoader.getResources());
-        controller.setupListeners(primaryStage);
+        controller.setupStageListeners(primaryStage);
         controller.addObserver(this);
 
         primaryStage.show();
@@ -54,18 +56,20 @@ public class TextFinderApp extends Application implements Observer {
     @SneakyThrows
     @Override
     public void update(Observable o, Object arg) {
+        ((MainStageController) o).getExecutorService().shutdownNow();
+
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(AppConfig.MAIN_STAGE_FXML_PATH));
         fxmlLoader.setResources(ResourceBundle.getBundle("bundles.locale", (Locale) arg));
+        StatusMessages.setBundle(fxmlLoader.getResources());
         AnchorPane newNode = fxmlLoader.load();
-        MainStageController controller = fxmlLoader.getController();
-        currentRootContainer.getChildren().setAll(newNode.getChildren());
-
         config.setBundle(fxmlLoader.getResources());
-        config.initStageParams();
 
+        MainStageController controller = fxmlLoader.getController();
         controller.setAppConfig(config);
-        controller.setBundle(fxmlLoader.getResources());
+        controller.setupStageListeners(config.getPrimaryStage());
         controller.addObserver(this);
+
+        currentRootContainer.getChildren().setAll(newNode.getChildren());
     }
 
 }

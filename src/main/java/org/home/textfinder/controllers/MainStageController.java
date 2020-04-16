@@ -52,13 +52,21 @@ public class MainStageController implements Observable {
     @FXML
     private AnchorPane controlPanel;
     @FXML
+    private TabPane resultsTabPane;
+    @FXML
     private Text fileStatusText;
     @FXML
     private Text pageStatusText;
     @FXML
     private Button searchButton;
     @FXML
+    private Button searchTextButton;
+    @FXML
     private Button exitPageReadingModeButton;
+    @FXML
+    private Button readBackButton;
+    @FXML
+    private Button readForwardButton;
     @FXML
     private TextField searchPathTextField;
     @FXML
@@ -72,18 +80,24 @@ public class MainStageController implements Observable {
     @FXML
     private RadioButton enableFileContentRadioButton;
     @FXML
-    private TabPane resultsTabPane;
-    @FXML
-    private Button readBackButton;
-    @FXML
-    private Button readForwardButton;
-    @FXML
     private CheckBox oneTabModeCheckBox;
     @FXML
     private CheckBox largeFileModeCheckBox;
-    @FXML
-    private Button searchTextButton;
 
+
+    @FXML
+    private void initialize() {
+        bundle = StatusMessages.getBundle();
+        //todo: Temp for testing
+        searchPathTextField.setText("D:\\Downloads\\HDFS_2\\test");
+        searchButton.setDisable(false);
+
+        setupControlsListeners();
+        performResultsView(new TreeView<>());
+        setupControlsTips();
+
+
+    }
 
     @Override
     public void addObserver(Observer observer) {
@@ -108,137 +122,6 @@ public class MainStageController implements Observable {
     @FXML
     private void languageMenuRussianAction(ActionEvent event) {
         notifyObservers(AppConfig.APP_LOCALE_RUSSIAN);
-    }
-
-    @FXML
-    private void initialize() {
-        searchTextButton.setOnAction(event -> {
-            String searchText = fileContentSearchTextField.getText();
-            if (!searchText.isEmpty()) {
-                System.out.println(tabsSearchTextMap + "\n");
-
-                final Tab selectedTab = resultsTabPane.getSelectionModel().getSelectedItem();
-                final SplitPane currentPane = (SplitPane) selectedTab.getContent();
-                final VirtualizedScrollPane<CodeArea> scrollPane = (VirtualizedScrollPane<CodeArea>) currentPane.getItems().get(1);
-                final CodeArea fileContentArea = scrollPane.getContent();
-
-                SearchedTextData searchedTextData = tabsSearchTextMap.get(selectedTab);
-                String text = searchedTextData.getText();
-                if (!searchText.equals(text)) {
-                    searchedTextData.setText(searchText);
-                    searchedTextData.setPosition(0);
-                }
-
-                int caretPosition = StringUtils.indexOfIgnoreCase(fileContentArea.getText(), searchText, searchedTextData.getPosition());
-                if (caretPosition > 0) {
-                    fileContentArea.showCaretProperty();
-                    searchedTextData.setPosition(caretPosition + searchText.length());
-                    fileContentArea.moveTo(caretPosition + searchText.length());
-                    fileContentArea.requestFollowCaret();
-                    fileContentArea.setStyle(caretPosition, caretPosition + searchText.length(), Collections.singletonList("foundText"));
-
-                    tabsSearchTextMap.put(selectedTab, searchedTextData);
-                } else {
-                    fileContentArea.showCaretProperty();
-                    DialogWindows.showInformationAlert("Больше совпадений не найдено !");
-                    searchedTextData.setPosition(0);
-                    tabsSearchTextMap.put(selectedTab, searchedTextData);
-                    fileContentArea.moveTo(0);
-                    fileContentArea.requestFollowCaret();
-                }
-            }
-
-        });
-
-
-        exitPageReadingModeButton.setOnAction(event -> {
-            oneTabModeCheckBox.setDisable(false);
-            largeFileModeCheckBox.setDisable(false);
-            readForwardButton.setDisable(true);
-            readBackButton.setDisable(true);
-            exitPageReadingModeButton.setDisable(true);
-            searchButton.setDisable(false);
-            searchPathTextField.setDisable(false);
-        });
-        exitPageReadingModeButton.setTooltip(new Tooltip("Завершить постраничный просмотр"));
-
-
-        largeFileModeCheckBox.setOnAction(event -> {
-            final CheckBox largeFile = (CheckBox) event.getSource();
-            if (largeFile.isSelected()) {
-
-                DialogWindows.showInformationAlert("В данном режиме: файл любого размера загружается полностью в ОЗУ, отслеживайте наличие свободной памяти и параметры запуска JVM: -Xms -Xmx");
-                resultsTabPane.getTabs().remove(1, resultsTabPane.getTabs().size());
-                oneTabModeCheckBox.setSelected(true);
-                oneTabModeCheckBox.setDisable(true);
-
-                largeFile.setOnAction(action -> {
-                    if (largeFile.isSelected()) {
-                        resultsTabPane.getTabs().remove(1, resultsTabPane.getTabs().size());
-                        oneTabModeCheckBox.setSelected(true);
-                        oneTabModeCheckBox.setDisable(true);
-                    } else {
-                        oneTabModeCheckBox.setDisable(false);
-                    }
-                });
-            }
-        });
-
-
-        oneTabModeCheckBox.setOnAction(event -> {
-            final CheckBox oneTab = (CheckBox) event.getSource();
-            if (oneTab.isSelected()) {
-                final int tabsCount = resultsTabPane.getTabs().size();
-                if (tabsCount > 1) {
-                    resultsTabPane.getTabs().remove(1, tabsCount);
-                }
-            }
-        });
-
-        performResultsViewAndListeners(new TreeView<>());
-
-
-        //todo: Temp for testing
-        searchPathTextField.setText("D:\\Downloads\\HDFS_2\\test");
-        searchButton.setDisable(false);
-
-
-        readForwardButton.setOnAction(event -> {
-            final Tab selectedTab = resultsTabPane.getSelectionModel().getSelectedItem();
-            CodeArea codeArea = performFileViewArea(selectedTab);
-            Map<Boolean, String> fileContent = FileUtils.getNextPageContent(currentFilePath);
-            if (!fileContent.isEmpty()) {
-                pageStatusText.setText(StatusMessages.getFilePagesStatus());
-                boolean hasMorePages = fileContent.keySet().iterator().next();
-                codeArea.appendText(fileContent.get(hasMorePages));
-                if (!hasMorePages) {
-                    readForwardButton.setDisable(true);
-                }
-                readBackButton.setDisable(false);
-            }
-        });
-        readForwardButton.setTooltip(new Tooltip("Загрузить следующие 50 MB"));
-
-        readBackButton.setOnAction(event -> {
-            final Tab selectedTab = resultsTabPane.getSelectionModel().getSelectedItem();
-            CodeArea codeArea = performFileViewArea(selectedTab);
-            Map<Boolean, String> fileContent = FileUtils.getPreviousPageContent(currentFilePath);
-            if (!fileContent.isEmpty()) {
-                pageStatusText.setText(StatusMessages.getFilePagesStatus());
-                boolean hasPreviousPage = fileContent.keySet().iterator().next();
-                codeArea.appendText(fileContent.get(hasPreviousPage));
-                if (!hasPreviousPage) {
-                    readBackButton.setDisable(true);
-                }
-                readForwardButton.setDisable(false);
-            }
-        });
-        readBackButton.setTooltip(new Tooltip("Загрузить предыдущие 50 MB"));
-
-
-        searchButton.setOnAction(event -> startSearchTask());
-
-
     }
 
 
@@ -302,8 +185,10 @@ public class MainStageController implements Observable {
         }
     }
 
-    public void setupListeners(Stage primaryStage) {
-        primaryStage.setOnCloseRequest((closeEvent) -> executorService.shutdown());
+    public void setupStageListeners(Stage primaryStage) {
+        primaryStage.setOnCloseRequest((closeEvent) -> {
+            executorService.shutdownNow();
+        });
     }
 
 
@@ -319,27 +204,27 @@ public class MainStageController implements Observable {
             rootItem.setExpanded(true);
 
             if (searchPath.isEmpty() || !searchCatalog.exists()) {
-                DialogWindows.showInformationAlert("Путь указан неверно !");
+                DialogWindows.showInformationAlert(bundle.getString("alert.badPath"));
                 return;
             }
             if (enableFileContentRadioButton.isSelected() && searchText.isEmpty()) {
-                DialogWindows.showInformationAlert("Не задан текст поиска !");
+                DialogWindows.showInformationAlert(bundle.getString("alert.noSearchedText"));
                 return;
             }
             if (enableFileMaskRadioButton.isSelected() && fileMaskTextField.getText().trim().isEmpty()) {
-                DialogWindows.showInformationAlert("Не задана маска названия файла!");
+                DialogWindows.showInformationAlert(bundle.getString("alert.noFileMask"));
                 return;
             }
 
             if (!oneTabModeCheckBox.isSelected()) {
-                currentTab = performResultsViewAndListeners(searchResultsView);
+                currentTab = performResultsView(searchResultsView);
                 tabTitle = currentTab.getText();
-                Platform.runLater(() -> currentTab.setText("Идет поиск..."));
+                Platform.runLater(() -> currentTab.setText(bundle.getString("tab.Search")));
             } else {
                 currentTab = resultsTabPane.getSelectionModel().getSelectedItem();
                 currentTab.setDisable(true);
                 tabTitle = currentTab.getText();
-                Platform.runLater(() -> currentTab.setText("Идет поиск..."));
+                Platform.runLater(() -> currentTab.setText(bundle.getString("tab.Search")));
             }
 
             if (enableFileMaskRadioButton.isSelected()) {
@@ -366,17 +251,14 @@ public class MainStageController implements Observable {
                     currentTab.setText(tabTitle);
                     currentTab.setDisable(false);
                 });
-
             }
-
-
         };
         executorService.execute(searchTask);
 
     }
 
 
-    private Tab performResultsViewAndListeners(TreeView<String> searchResultsView) {
+    private Tab performResultsView(TreeView<String> searchResultsView) {
         CodeArea fileContentArea = new CodeArea();
         fileContentArea.setVisible(false);
         fileContentArea.setParagraphGraphicFactory(LineNumberFactory.get(fileContentArea));
@@ -417,21 +299,17 @@ public class MainStageController implements Observable {
                 try {
                     long fileSize = Files.size(Paths.get(filePath));
                     fileStatusText.setText(StatusMessages.getFileSizeStatus(fileSize));
-
-
                     if (largeFileModeCheckBox.isSelected()) {
                         Platform.runLater(() -> {
                             fileContentTextArea.replaceText(FileUtils.getLargeFileContent(filePath));
                         });
                         return;
                     }
-
                     if (fileSize > FileUtils.FIZE_SIZE_LIMIT) {
                         if (!oneTabModeCheckBox.isSelected()) {
-                            DialogWindows.showInformationAlert("Постраничный просмотр файлов больше 100 MB доступен только в режиме одной вкладки");
+                            DialogWindows.showInformationAlert(bundle.getString("alert.pagesOnlyOneTabMode"));
                             return;
                         }
-
                         String filePageContent = FileUtils.getFirstPageContent(filePath);
                         pageStatusText.setText(StatusMessages.getFilePagesStatus());
                         if (!filePageContent.isEmpty()) {
@@ -442,6 +320,7 @@ public class MainStageController implements Observable {
                             readBackButton.setDisable(true);
                             searchButton.setDisable(true);
                             searchPathTextField.setDisable(true);
+                            enableFileMaskRadioButton.setDisable(true);
                             Platform.runLater(() -> {
                                 fileContentTextArea.replaceText(filePageContent);
                                 fileContentTextArea.setVisible(true);
@@ -463,7 +342,7 @@ public class MainStageController implements Observable {
                     }
 
                 } catch (IOException e) {
-                    showInformationAlert("Не могу прочитать этот файл !");
+                    showInformationAlert(bundle.getString("alert.cantReadFile"));
                 }
             }
         }
@@ -483,5 +362,125 @@ public class MainStageController implements Observable {
         return codeArea;
     }
 
+
+    private void setupControlsListeners() {
+        searchTextButton.setOnAction(event -> {
+            String searchText = fileContentSearchTextField.getText();
+            if (!searchText.isEmpty()) {
+                final Tab selectedTab = resultsTabPane.getSelectionModel().getSelectedItem();
+                final SplitPane currentPane = (SplitPane) selectedTab.getContent();
+                final VirtualizedScrollPane<CodeArea> scrollPane = (VirtualizedScrollPane<CodeArea>) currentPane.getItems().get(1);
+                final CodeArea fileContentArea = scrollPane.getContent();
+
+                SearchedTextData searchedTextData = tabsSearchTextMap.get(selectedTab);
+                String text = searchedTextData.getText();
+                if (!searchText.equals(text)) {
+                    searchedTextData.setText(searchText);
+                    searchedTextData.setPosition(0);
+                }
+
+                int caretPosition = StringUtils.indexOfIgnoreCase(fileContentArea.getText(), searchText, searchedTextData.getPosition());
+                if (caretPosition > 0) {
+                    fileContentArea.showCaretProperty();
+                    searchedTextData.setPosition(caretPosition + searchText.length());
+                    fileContentArea.moveTo(caretPosition + searchText.length());
+                    fileContentArea.requestFollowCaret();
+                    fileContentArea.setStyle(caretPosition, caretPosition + searchText.length(), Collections.singletonList(AppConfig.FOUND_TEXT_STYLE));
+
+                    tabsSearchTextMap.put(selectedTab, searchedTextData);
+                } else {
+                    fileContentArea.showCaretProperty();
+                    DialogWindows.showInformationAlert(bundle.getString("alert.noMatches"));
+                    searchedTextData.setPosition(0);
+                    tabsSearchTextMap.put(selectedTab, searchedTextData);
+                    fileContentArea.moveTo(0);
+                    fileContentArea.requestFollowCaret();
+                }
+            }
+
+        });
+
+
+        exitPageReadingModeButton.setOnAction(event -> {
+            oneTabModeCheckBox.setDisable(false);
+            largeFileModeCheckBox.setDisable(false);
+            readForwardButton.setDisable(true);
+            readBackButton.setDisable(true);
+            exitPageReadingModeButton.setDisable(true);
+            searchButton.setDisable(false);
+            searchPathTextField.setDisable(false);
+            enableFileMaskRadioButton.setDisable(false);
+        });
+
+
+        largeFileModeCheckBox.setOnAction(event -> {
+            final CheckBox largeFile = (CheckBox) event.getSource();
+            if (largeFile.isSelected()) {
+                DialogWindows.showInformationAlert(bundle.getString("alert.largeFileModeOn"));
+                resultsTabPane.getTabs().remove(1, resultsTabPane.getTabs().size());
+                oneTabModeCheckBox.setSelected(true);
+                oneTabModeCheckBox.setDisable(true);
+
+                largeFile.setOnAction(action -> {
+                    if (largeFile.isSelected()) {
+                        resultsTabPane.getTabs().remove(1, resultsTabPane.getTabs().size());
+                        oneTabModeCheckBox.setSelected(true);
+                        oneTabModeCheckBox.setDisable(true);
+                    } else {
+                        oneTabModeCheckBox.setDisable(false);
+                    }
+                });
+            }
+        });
+
+        oneTabModeCheckBox.setOnAction(event -> {
+            final CheckBox oneTab = (CheckBox) event.getSource();
+            if (oneTab.isSelected()) {
+                final int tabsCount = resultsTabPane.getTabs().size();
+                if (tabsCount > 1) {
+                    resultsTabPane.getTabs().remove(1, tabsCount);
+                }
+            }
+        });
+
+        readForwardButton.setOnAction(event -> {
+            final Tab selectedTab = resultsTabPane.getSelectionModel().getSelectedItem();
+            CodeArea codeArea = performFileViewArea(selectedTab);
+            Map<Boolean, String> fileContent = FileUtils.getNextPageContent(currentFilePath);
+            if (!fileContent.isEmpty()) {
+                pageStatusText.setText(StatusMessages.getFilePagesStatus());
+                boolean hasMorePages = fileContent.keySet().iterator().next();
+                codeArea.appendText(fileContent.get(hasMorePages));
+                if (!hasMorePages) {
+                    readForwardButton.setDisable(true);
+                }
+                readBackButton.setDisable(false);
+            }
+        });
+
+        readBackButton.setOnAction(event -> {
+            final Tab selectedTab = resultsTabPane.getSelectionModel().getSelectedItem();
+            CodeArea codeArea = performFileViewArea(selectedTab);
+            Map<Boolean, String> fileContent = FileUtils.getPreviousPageContent(currentFilePath);
+            if (!fileContent.isEmpty()) {
+                pageStatusText.setText(StatusMessages.getFilePagesStatus());
+                boolean hasPreviousPage = fileContent.keySet().iterator().next();
+                codeArea.appendText(fileContent.get(hasPreviousPage));
+                if (!hasPreviousPage) {
+                    readBackButton.setDisable(true);
+                }
+                readForwardButton.setDisable(false);
+            }
+        });
+
+        searchButton.setOnAction(event -> startSearchTask());
+    }
+
+    private void setupControlsTips(){
+        readBackButton.setTooltip(new Tooltip(bundle.getString("tip.readBack")));
+        readForwardButton.setTooltip(new Tooltip(bundle.getString("tip.readMore")));
+        exitPageReadingModeButton.setTooltip(new Tooltip(bundle.getString("tip.exitReadingMode")));
+        searchTextButton.setTooltip(new Tooltip(bundle.getString("tip.findText")));
+    }
 
 }

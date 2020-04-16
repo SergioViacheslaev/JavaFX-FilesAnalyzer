@@ -17,11 +17,6 @@ import java.nio.file.Paths;
  * @author Sergei Viacheslaev
  */
 public class FileTreeUtils {
-    public static long nextPageOffset = 0L;
-    public static int nextLine = 0;
-    public static long previousPageOffset = 0L;
-    public static int previousLine = 0;
-
 
     @SneakyThrows
     public static void buildFilesWithExtensionsTree(TreeItem<String> rootItem, String fileExtension) {

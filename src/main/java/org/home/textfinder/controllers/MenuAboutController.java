@@ -1,9 +1,5 @@
 package org.home.textfinder.controllers;
 
-/**
- * @author Sergei Viacheslaev
- */
-
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
