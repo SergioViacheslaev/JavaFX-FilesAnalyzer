@@ -68,6 +68,8 @@ public class MainStageController implements Observable {
     @FXML
     private Button readForwardButton;
     @FXML
+    private Button showAllTextOccurrencesButton;
+    @FXML
     private TextField searchPathTextField;
     @FXML
     private TextField fileExtensionTextField;
@@ -295,6 +297,7 @@ public class MainStageController implements Observable {
             fileContentTextArea, ResourceBundle bundle) {
         if (selectedItem != null) {
             final String filePath = selectedItem.getValue();
+            showAllTextOccurrencesButton.setDisable(false);
             if (Files.isRegularFile(Paths.get(filePath))) {
                 try {
                     long fileSize = Files.size(Paths.get(filePath));
@@ -472,15 +475,70 @@ public class MainStageController implements Observable {
                 readForwardButton.setDisable(false);
             }
         });
-
         searchButton.setOnAction(event -> startSearchTask());
+
+        showAllTextOccurrencesButton.setOnAction(event -> {
+            if (currentFilePath != null) {
+                try {
+                    Stage stage = new Stage();
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(AppConfig.ALL_OCCURENCES_WINDOW_FXML_PATH));
+                    Parent root = fxmlLoader.load();
+                    stage.setTitle(bundle.getString("title.foundOccurrences"));
+                    stage.setMinHeight(600);
+                    stage.setMinWidth(800);
+                    stage.setResizable(false);
+                    stage.setScene(new Scene(root));
+                    stage.initModality(Modality.NONE);
+                    stage.show();
+
+                    final ShowAllOccurrencesController controller = fxmlLoader.getController();
+                    CodeArea foundTextArea = controller.getTextOccurrencesArea();
+                    foundTextArea.appendText(bundle.getString("tab.Search"));
+                    foundTextArea.setDisable(true);
+
+                    showAllTextOccurrencesTask(foundTextArea, stage);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+
     }
 
-    private void setupControlsTips(){
+    private void showAllTextOccurrencesTask(CodeArea foundTextArea, Stage stage) {
+        final String searchedText = fileContentSearchTextField.getText();
+        if (searchedText.trim().isEmpty()) {
+            DialogWindows.showInformationAlert(bundle.getString("alert.noSearchedText"));
+            return;
+        }
+        Runnable findTextOccurrencesTask = () -> {
+            File file = new File(currentFilePath);
+            String allFoundOccurrences = FileUtils.getAllTextOccurrences(file, searchedText);
+            if (allFoundOccurrences.isEmpty()) {
+                Platform.runLater(() -> {
+                    foundTextArea.clear();
+                    stage.close();
+                });
+                DialogWindows.showInformationAlert(bundle.getString("alert.noTextFound"));
+                return;
+            }
+
+            Platform.runLater(() -> {
+                foundTextArea.replaceText(allFoundOccurrences);
+                foundTextArea.setDisable(false);
+            });
+        };
+
+        executorService.execute(findTextOccurrencesTask);
+    }
+
+    private void setupControlsTips() {
         readBackButton.setTooltip(new Tooltip(bundle.getString("tip.readBack")));
         readForwardButton.setTooltip(new Tooltip(bundle.getString("tip.readMore")));
         exitPageReadingModeButton.setTooltip(new Tooltip(bundle.getString("tip.exitReadingMode")));
         searchTextButton.setTooltip(new Tooltip(bundle.getString("tip.findText")));
+        showAllTextOccurrencesButton.setTooltip(new Tooltip(bundle.getString("tip.showAllOccurrences")));
     }
 
 }

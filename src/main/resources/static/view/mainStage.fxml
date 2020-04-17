@@ -80,13 +80,13 @@
          </font>
       </RadioButton>
       <TabPane fx:id="resultsTabPane" layoutX="3.0" layoutY="211.0" prefHeight="452.0" prefWidth="1029.0" AnchorPane.bottomAnchor="9.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="211.0" />
-      <AnchorPane fx:id="controlPanel" layoutX="485.0" layoutY="176.0" prefHeight="43.0" prefWidth="549.0" AnchorPane.bottomAnchor="549.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="176.0">
+      <AnchorPane fx:id="controlPanel" layoutX="485.0" layoutY="176.0" prefHeight="43.0" prefWidth="607.0" AnchorPane.bottomAnchor="549.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="176.0">
          <children>
             <CheckBox fx:id="oneTabModeCheckBox" disable="true" layoutX="48.0" layoutY="14.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="110.0" selected="true" text="OneTab Mode">
                <font>
                   <Font name="Aver" size="13.0" />
                </font></CheckBox>
-            <Button fx:id="readBackButton" contentDisplay="GRAPHIC_ONLY" disable="true" graphicTextGap="1.0" layoutX="358.0" layoutY="6.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="32.0">
+            <Button fx:id="readBackButton" contentDisplay="GRAPHIC_ONLY" disable="true" graphicTextGap="1.0" layoutX="421.0" layoutY="6.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="32.0">
                <graphic>
                   <ImageView fitHeight="20.0" fitWidth="44.0" pickOnBounds="true">
                      <image>
@@ -98,7 +98,7 @@
                   <Insets />
                </opaqueInsets>
             </Button>
-            <Button fx:id="readForwardButton" contentDisplay="GRAPHIC_ONLY" disable="true" graphicTextGap="1.0" layoutX="424.0" layoutY="6.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="32.0">
+            <Button fx:id="readForwardButton" contentDisplay="GRAPHIC_ONLY" disable="true" graphicTextGap="1.0" layoutX="487.0" layoutY="6.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="32.0">
                <graphic>
                   <ImageView fitHeight="20.0" fitWidth="44.0" pickOnBounds="true">
                      <image>
@@ -115,7 +115,7 @@
                   <Font name="Aver" size="13.0" />
                </font>
             </CheckBox>
-            <Button fx:id="exitPageReadingModeButton" contentDisplay="GRAPHIC_ONLY" disable="true" graphicTextGap="1.0" layoutX="493.0" layoutY="6.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="33.0">
+            <Button fx:id="exitPageReadingModeButton" contentDisplay="GRAPHIC_ONLY" disable="true" graphicTextGap="1.0" layoutX="556.0" layoutY="6.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="33.0">
                <opaqueInsets>
                   <Insets />
                </opaqueInsets>
@@ -127,7 +127,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button fx:id="searchTextButton" contentDisplay="GRAPHIC_ONLY" disable="true" focusTraversable="false" graphicTextGap="1.0" layoutX="290.0" layoutY="6.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="60.0">
+            <Button fx:id="searchTextButton" contentDisplay="GRAPHIC_ONLY" disable="true" focusTraversable="false" graphicTextGap="1.0" layoutX="353.0" layoutY="6.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="60.0">
                <opaqueInsets>
                   <Insets />
                </opaqueInsets>
@@ -141,6 +141,21 @@
                <padding>
                   <Insets bottom="-2.0" left="-2.0" right="-2.0" top="-2.0" />
                </padding>
+            </Button>
+            <Button fx:id="showAllTextOccurrencesButton" contentDisplay="GRAPHIC_ONLY" disable="true" focusTraversable="false" graphicTextGap="1.0" layoutX="285.0" layoutY="6.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="60.0">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <padding>
+                  <Insets bottom="-2.0" left="-2.0" right="-2.0" top="-2.0" />
+               </padding>
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="61.0" pickOnBounds="true">
+                     <image>
+                        <Image url="@../images/findAllTextOccurrencesIcon.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
             </Button>
          </children>
       </AnchorPane>

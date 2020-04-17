@@ -15,7 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-/**Gets file content, pages, check files has searched text.
+/**
+ * Gets file content, pages, check files has searched text.
  *
  * @author Sergei Viacheslaev
  */
@@ -24,6 +25,7 @@ public class FileUtils {
     public static final long ONE_KB = 1024;
     public static final long FIZE_SIZE_LIMIT = 100 * ONE_MB;
     public static final int FILE_PAGE_LIMIT = 50 * 1024 * 1024;
+    public static final String LINE_SEPARATOR = System.getProperty("line.separator");
     public static int lastPageSize = 0;
     public static long previousPagePointer = 0;
     public static long nextPagePointer = 0;
@@ -133,13 +135,28 @@ public class FileUtils {
         try (Scanner scanner = new Scanner(file)) {
             while (scanner.hasNextLine() && !isContentFound) {
                 String contentLine = scanner.nextLine();
-                if (StringUtils.containsIgnoreCase(contentLine,searchedText)) {
+                if (StringUtils.containsIgnoreCase(contentLine, searchedText)) {
                     isContentFound = true;
                 }
             }
         }
         return isContentFound;
     }
+
+    @SneakyThrows
+    public static String getAllTextOccurrences(File file, String searchedText) {
+        StringBuilder sb = new StringBuilder();
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNextLine()) {
+                String contentLine = scanner.nextLine();
+                if (StringUtils.containsIgnoreCase(contentLine, searchedText)) {
+                    sb.append(contentLine).append(LINE_SEPARATOR);
+                }
+            }
+        }
+        return sb.toString().trim();
+    }
+
 
     @SneakyThrows
     private static long countTotalFilePages(String filePath) {
