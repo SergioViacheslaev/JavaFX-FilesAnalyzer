@@ -46,12 +46,12 @@
             <Font name="Aver" size="16.0" />
          </font>
       </Text>
-      <TextField fx:id="fileContentSearchTextField" disable="true" focusTraversable="false" layoutX="331.0" layoutY="59.0" prefHeight="30.0" prefWidth="255.0" promptText="%prompt.textFind">
+      <TextField fx:id="fileContentSearchTextField" disable="true" focusTraversable="false" layoutX="331.0" layoutY="59.0" prefHeight="30.0" prefWidth="279.0" promptText="%prompt.textFind">
          <font>
             <Font size="14.0" />
          </font>
       </TextField>
-      <Button fx:id="searchButton" disable="true" focusTraversable="false" layoutX="600.0" layoutY="38.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="64.0">
+      <Button fx:id="searchButton" disable="true" focusTraversable="false" layoutX="623.0" layoutY="38.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="64.0">
          <graphic>
             <ImageView fitHeight="51.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -60,12 +60,12 @@
             </ImageView>
          </graphic>
       </Button>
-      <TextField fx:id="fileMaskTextField" disable="true" focusTraversable="false" layoutX="332.0" layoutY="125.0" prefHeight="30.0" prefWidth="255.0" promptText="%prompt.fileMask">
+      <TextField fx:id="fileMaskTextField" disable="true" focusTraversable="false" layoutX="332.0" layoutY="125.0" prefHeight="30.0" prefWidth="279.0" promptText="%prompt.fileMask">
          <font>
             <Font size="14.0" />
          </font>
       </TextField>
-      <RadioButton fx:id="enableFileMaskRadioButton" focusTraversable="false" layoutX="332.0" layoutY="103.0" mnemonicParsing="false" onAction="#handleFileMaskSetAction" prefHeight="19.0" prefWidth="210.0" text="%search.filemaskEnable">
+      <RadioButton fx:id="enableFileMaskRadioButton" focusTraversable="false" layoutX="332.0" layoutY="103.0" mnemonicParsing="false" onAction="#handleFileMaskSetAction" prefHeight="19.0" prefWidth="316.0" text="%search.filemaskEnable">
          <font>
             <Font name="Aver" size="14.0" />
          </font></RadioButton>
@@ -74,7 +74,7 @@
             <Font name="Aver" size="16.0" />
          </font>
       </Text>
-      <RadioButton fx:id="enableFileContentRadioButton" focusTraversable="false" layoutX="332.0" layoutY="37.0" mnemonicParsing="false" onAction="#handleFileContentSetAction" prefHeight="19.0" prefWidth="255.0" text="%search.contentEnable">
+      <RadioButton fx:id="enableFileContentRadioButton" focusTraversable="false" layoutX="332.0" layoutY="37.0" mnemonicParsing="false" onAction="#handleFileContentSetAction" prefHeight="19.0" prefWidth="316.0" text="%search.contentEnable">
          <font>
             <Font name="Aver" size="14.0" />
          </font>
@@ -163,7 +163,7 @@
          <font>
             <Font name="Aver" size="12.0" />
          </font></Text>
-      <Text fx:id="pageStatusText" layoutX="518.0" layoutY="223.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="140.0">
+      <Text fx:id="pageStatusText" layoutX="524.0" layoutY="225.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="212.0">
          <font>
             <Font name="Aver" size="12.0" />
          </font>

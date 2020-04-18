@@ -29,12 +29,13 @@ public class LogAnalyzerApp extends Application implements Observer {
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(AppConfig.MAIN_STAGE_FXML_PATH));
         fxmlLoader.setResources(ResourceBundle.getBundle("bundles.locale", AppConfig.APP_LOCALE_RUSSIAN));
+        AppConfig.setBundle(fxmlLoader.getResources());
         StatusMessages.setBundle(fxmlLoader.getResources());
         currentRootContainer = fxmlLoader.load();
         Scene scene = new Scene(currentRootContainer);
         primaryStage.setScene(scene);
 
-        config = new AppConfig(fxmlLoader.getResources(), primaryStage);
+        config = new AppConfig(primaryStage);
         config.initStageParams();
 
         MainStageController controller = fxmlLoader.getController();
@@ -60,9 +61,9 @@ public class LogAnalyzerApp extends Application implements Observer {
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(AppConfig.MAIN_STAGE_FXML_PATH));
         fxmlLoader.setResources(ResourceBundle.getBundle("bundles.locale", (Locale) arg));
+        AppConfig.setBundle(fxmlLoader.getResources());
         StatusMessages.setBundle(fxmlLoader.getResources());
         AnchorPane newNode = fxmlLoader.load();
-        config.setBundle(fxmlLoader.getResources());
 
         MainStageController controller = fxmlLoader.getController();
         controller.setAppConfig(config);

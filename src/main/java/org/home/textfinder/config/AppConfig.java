@@ -19,11 +19,10 @@ public class AppConfig {
     public static final Locale APP_LOCALE_RUSSIAN = new Locale("ru");
     public static final Locale APP_LOCALE_ENGLISH = new Locale("en");
     public static final String FOUND_TEXT_STYLE = "foundText";
-    private ResourceBundle bundle;
+    private static ResourceBundle bundle;
     private Stage primaryStage;
 
-    public AppConfig(ResourceBundle bundle, Stage primaryStage) {
-        this.bundle = bundle;
+    public AppConfig(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
 
@@ -35,9 +34,17 @@ public class AppConfig {
         primaryStage.setWidth(1280);
         primaryStage.setHeight(800);
         primaryStage.setTitle(bundle.getString("appTitle"));
-        primaryStage.getScene().getStylesheets().add( "/static/css/text-labels.css");
-        primaryStage.getScene().getStylesheets().add( "/static/css/text-area.css");
-        Font.loadFont(getClass().getResourceAsStream("/static/fonts/aver.ttf"),16);
+        primaryStage.getScene().getStylesheets().add("/static/css/text-labels.css");
+        primaryStage.getScene().getStylesheets().add("/static/css/text-area.css");
+        Font.loadFont(getClass().getResourceAsStream("/static/fonts/aver.ttf"), 16);
+    }
+
+    public static void setBundle(ResourceBundle bundle) {
+        AppConfig.bundle = bundle;
+    }
+
+    public static ResourceBundle getBundle() {
+        return bundle;
     }
 
 

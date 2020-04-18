@@ -90,14 +90,12 @@ public class MainStageController implements Observable {
     @FXML
     private void initialize() {
         bundle = StatusMessages.getBundle();
-        //todo: Temp for testing
-        searchPathTextField.setText("D:\\Downloads\\HDFS_2\\test");
-        searchButton.setDisable(false);
+//        searchPathTextField.setText("D:\\Downloads\\HDFS_2\\test");
+//        searchButton.setDisable(false);
 
         setupControlsListeners();
         performResultsView(new TreeView<>());
         setupControlsTips();
-
 
     }
 
@@ -132,14 +130,10 @@ public class MainStageController implements Observable {
         final RadioButton currentButton = (RadioButton) event.getSource();
         if (currentButton.isSelected()) {
             fileExtensionTextField.setDisable(true);
-            fileContentSearchTextField.setDisable(true);
             fileMaskTextField.setDisable(false);
             searchPathTextField.setDisable(false);
-            enableFileContentRadioButton.setSelected(true);
-            fileContentSearchTextField.setDisable(false);
         } else {
             fileExtensionTextField.setDisable(false);
-            fileContentSearchTextField.setDisable(false);
             fileMaskTextField.setDisable(true);
         }
 
@@ -151,9 +145,11 @@ public class MainStageController implements Observable {
         if (currentButton.isSelected()) {
             fileContentSearchTextField.setDisable(false);
             searchTextButton.setDisable(false);
+            showAllTextOccurrencesButton.setDisable(false);
         } else {
             fileContentSearchTextField.setDisable(true);
             searchTextButton.setDisable(true);
+            showAllTextOccurrencesButton.setDisable(true);
         }
 
     }
@@ -229,8 +225,10 @@ public class MainStageController implements Observable {
                 Platform.runLater(() -> currentTab.setText(bundle.getString("tab.Search")));
             }
 
-            if (enableFileMaskRadioButton.isSelected()) {
-                FileTreeUtils.buildFilesMaskedTree(rootItem, fileMaskTextField.getText(), searchText);
+            if (enableFileMaskRadioButton.isSelected() && !enableFileContentRadioButton.isSelected()) {
+                FileTreeUtils.buildFilesMaskedTree(rootItem, fileMaskTextField.getText());
+            } else if (enableFileMaskRadioButton.isSelected() && enableFileContentRadioButton.isSelected()) {
+                FileTreeUtils.buildFilesMaskedContentTree(rootItem, fileMaskTextField.getText(), searchText);
             } else if (enableFileContentRadioButton.isSelected()) {
                 FileTreeUtils.buildFilesWithContentTree(rootItem, fileExtensionTextField.getText(), searchText);
             } else {
@@ -297,14 +295,15 @@ public class MainStageController implements Observable {
             fileContentTextArea, ResourceBundle bundle) {
         if (selectedItem != null) {
             final String filePath = selectedItem.getValue();
-            showAllTextOccurrencesButton.setDisable(false);
             if (Files.isRegularFile(Paths.get(filePath))) {
                 try {
                     long fileSize = Files.size(Paths.get(filePath));
                     fileStatusText.setText(StatusMessages.getFileSizeStatus(fileSize));
+                    pageStatusText.setText("");
                     if (largeFileModeCheckBox.isSelected()) {
                         Platform.runLater(() -> {
                             fileContentTextArea.replaceText(FileUtils.getLargeFileContent(filePath));
+                            pageStatusText.setText(bundle.getString("file.fullyLoaded"));
                         });
                         return;
                     }
@@ -448,6 +447,7 @@ public class MainStageController implements Observable {
 
         readForwardButton.setOnAction(event -> {
             final Tab selectedTab = resultsTabPane.getSelectionModel().getSelectedItem();
+            tabsSearchTextMap.get(selectedTab).setPosition(0);
             CodeArea codeArea = performFileViewArea(selectedTab);
             Map<Boolean, String> fileContent = FileUtils.getNextPageContent(currentFilePath);
             if (!fileContent.isEmpty()) {
@@ -463,6 +463,7 @@ public class MainStageController implements Observable {
 
         readBackButton.setOnAction(event -> {
             final Tab selectedTab = resultsTabPane.getSelectionModel().getSelectedItem();
+            tabsSearchTextMap.get(selectedTab).setPosition(0);
             CodeArea codeArea = performFileViewArea(selectedTab);
             Map<Boolean, String> fileContent = FileUtils.getPreviousPageContent(currentFilePath);
             if (!fileContent.isEmpty()) {
@@ -491,7 +492,7 @@ public class MainStageController implements Observable {
                     stage.initModality(Modality.NONE);
                     stage.show();
 
-                    final ShowAllOccurrencesController controller = fxmlLoader.getController();
+                    final TextOccurrencesMenuController controller = fxmlLoader.getController();
                     CodeArea foundTextArea = controller.getTextOccurrencesArea();
                     foundTextArea.appendText(bundle.getString("tab.Search"));
                     foundTextArea.setDisable(true);
@@ -509,6 +510,7 @@ public class MainStageController implements Observable {
     private void showAllTextOccurrencesTask(CodeArea foundTextArea, Stage stage) {
         final String searchedText = fileContentSearchTextField.getText();
         if (searchedText.trim().isEmpty()) {
+            Platform.runLater(stage::close);
             DialogWindows.showInformationAlert(bundle.getString("alert.noSearchedText"));
             return;
         }
