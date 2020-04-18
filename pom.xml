@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.home</groupId>
-    <artifactId>javafx-textfinder</artifactId>
+    <artifactId>javafx-filesanalyzer</artifactId>
     <version>1.0-SNAPSHOT</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -15,17 +15,37 @@
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
             <version>14</version>
+            <classifier>win</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>14</version>
+            <classifier>mac</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>14</version>
+            <classifier>linux</classifier>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
             <version>14</version>
+            <classifier>win</classifier>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.controlsfx/controlsfx -->
         <dependency>
-            <groupId>org.controlsfx</groupId>
-            <artifactId>controlsfx</artifactId>
-            <version>11.0.1</version>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>14</version>
+            <classifier>mac</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>14</version>
+            <classifier>linux</classifier>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -48,6 +68,7 @@
 
 
 
+
     </dependencies>
 
     <build>
@@ -57,10 +78,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.0</version>
                 <configuration>
-                    <release>12</release>
+                    <release>8</release>
                     <encoding>${project.build.sourceEncoding}</encoding>
-                    <source>12</source>
-                    <target>12</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -68,7 +87,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.1</version>
                 <configuration>
-                    <mainClass>org.home.textfinder.Main</mainClass>
+                    <mainClass>org.home.filesanalyzer.Main</mainClass>
                 </configuration>
             </plugin>
             <plugin>
@@ -93,7 +112,7 @@
                             <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>org.home.textfinder.Main</mainClass>
+                                    <mainClass>org.home.filesanalyzer.Main</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>

@@ -1,4 +1,4 @@
-package org.home.textfinder;
+package org.home.filesanalyzer;
 
 import javafx.application.Application;
 

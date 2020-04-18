@@ -1,4 +1,4 @@
-package org.home.textfinder.model;
+package org.home.filesanalyzer.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

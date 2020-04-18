@@ -1,4 +1,4 @@
-package org.home.textfinder.controllers;
+package org.home.filesanalyzer.controllers;
 
 /**
  * @author Sergei Viacheslaev
@@ -15,7 +15,7 @@ import lombok.Setter;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
-import org.home.textfinder.config.AppConfig;
+import org.home.filesanalyzer.config.AppConfig;
 
 import java.util.ResourceBundle;
 

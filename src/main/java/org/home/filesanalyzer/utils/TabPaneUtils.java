@@ -1,4 +1,4 @@
-package org.home.textfinder.utils;
+package org.home.filesanalyzer.utils;
 
 import javafx.application.Platform;
 import javafx.scene.control.Tab;

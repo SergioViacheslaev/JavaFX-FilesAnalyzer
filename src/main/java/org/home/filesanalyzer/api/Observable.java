@@ -1,4 +1,4 @@
-package org.home.textfinder.api;
+package org.home.filesanalyzer.api;
 
 public interface Observable {
     void addObserver(Observer observer);

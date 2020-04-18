@@ -1,12 +1,9 @@
-package org.home.textfinder.utils;
+package org.home.filesanalyzer.utils;
 
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -55,7 +52,7 @@ public class FileUtils {
     @SneakyThrows
     public static Map<Boolean, String> getPreviousPageContent(String filePath) {
         boolean hasPreviousPage = true;
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath, StandardCharsets.UTF_8))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8))) {
             char[] buffer = new char[FILE_PAGE_LIMIT];
 
             if (br.skip(previousPagePointer) == 0) {
@@ -83,7 +80,7 @@ public class FileUtils {
     @SneakyThrows
     public static Map<Boolean, String> getNextPageContent(String filePath) {
         boolean hasNextPage = true;
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath, StandardCharsets.UTF_8))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8))) {
             char[] buffer = new char[FILE_PAGE_LIMIT];
 
             previousPagePointer = nextPagePointer - lastPageSize;
@@ -109,7 +106,7 @@ public class FileUtils {
 
     @SneakyThrows
     public static String getFirstPageContent(String filePath) {
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath, StandardCharsets.UTF_8))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8))) {
             char[] buffer = new char[FILE_PAGE_LIMIT];
 
             int bytesRead = br.read(buffer);

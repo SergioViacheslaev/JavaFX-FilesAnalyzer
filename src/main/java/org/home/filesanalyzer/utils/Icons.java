@@ -1,4 +1,4 @@
-package org.home.textfinder.utils;
+package org.home.filesanalyzer.utils;
 
 import javafx.scene.image.Image;
 import lombok.Getter;

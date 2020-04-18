@@ -1,4 +1,4 @@
-package org.home.textfinder;
+package org.home.filesanalyzer;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -6,11 +6,11 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import lombok.SneakyThrows;
-import org.home.textfinder.api.Observable;
-import org.home.textfinder.api.Observer;
-import org.home.textfinder.config.AppConfig;
-import org.home.textfinder.controllers.MainStageController;
-import org.home.textfinder.utils.StatusMessages;
+import org.home.filesanalyzer.api.Observable;
+import org.home.filesanalyzer.api.Observer;
+import org.home.filesanalyzer.config.AppConfig;
+import org.home.filesanalyzer.controllers.MainStageController;
+import org.home.filesanalyzer.utils.StatusMessages;
 
 import java.io.IOException;
 import java.util.Locale;

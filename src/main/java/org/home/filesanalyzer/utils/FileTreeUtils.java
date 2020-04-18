@@ -1,4 +1,4 @@
-package org.home.textfinder.utils;
+package org.home.filesanalyzer.utils;
 
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
@@ -6,6 +6,7 @@ import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,7 +19,6 @@ import java.nio.file.Paths;
  */
 public class FileTreeUtils {
 
-    @SneakyThrows
     public static void buildFilesWithExtensionsTree(TreeItem<String> rootItem, String fileExtension) {
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(rootItem.getValue()))) {
             for (Path path : directoryStream) {
@@ -34,6 +34,8 @@ public class FileTreeUtils {
                     removeEmptyTreeItem(rootItem);
                 }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

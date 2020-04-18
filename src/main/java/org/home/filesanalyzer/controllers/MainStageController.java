@@ -1,4 +1,4 @@
-package org.home.textfinder.controllers;
+package org.home.filesanalyzer.controllers;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -8,6 +8,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
@@ -20,11 +22,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
-import org.home.textfinder.api.Observable;
-import org.home.textfinder.api.Observer;
-import org.home.textfinder.config.AppConfig;
-import org.home.textfinder.model.SearchedTextData;
-import org.home.textfinder.utils.*;
+import org.home.filesanalyzer.api.Observable;
+import org.home.filesanalyzer.api.Observer;
+import org.home.filesanalyzer.config.AppConfig;
+import org.home.filesanalyzer.model.SearchedTextData;
+import org.home.filesanalyzer.utils.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +36,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static org.home.textfinder.utils.DialogWindows.showInformationAlert;
+import static org.home.filesanalyzer.utils.DialogWindows.showInformationAlert;
 
 @Getter
 @Setter
@@ -90,13 +92,9 @@ public class MainStageController implements Observable {
     @FXML
     private void initialize() {
         bundle = StatusMessages.getBundle();
-//        searchPathTextField.setText("D:\\Downloads\\HDFS_2\\test");
-//        searchButton.setDisable(false);
-
         setupControlsListeners();
         performResultsView(new TreeView<>());
         setupControlsTips();
-
     }
 
     @Override
@@ -240,6 +238,7 @@ public class MainStageController implements Observable {
                 final SplitPane splitPane = (SplitPane) selectedTab.getContent();
                 TreeView<String> firstSearchFilesView = (TreeView<String>) splitPane.getItems().get(0);
                 oneTabModeCheckBox.setDisable(false);
+                largeFileModeCheckBox.setDisable(false);
                 Platform.runLater(() -> {
                     firstSearchFilesView.setRoot(rootItem);
                     selectedTab.setText(tabTitle);
@@ -259,7 +258,9 @@ public class MainStageController implements Observable {
 
 
     private Tab performResultsView(TreeView<String> searchResultsView) {
-        CodeArea fileContentArea = new CodeArea();
+        final CodeArea fileContentArea = new CodeArea();
+        final ContextMenu contextMenu = setupContextMenu(fileContentArea);
+        fileContentArea.setContextMenu(contextMenu);
         fileContentArea.setVisible(false);
         fileContentArea.setParagraphGraphicFactory(LineNumberFactory.get(fileContentArea));
         VirtualizedScrollPane<CodeArea> scrollPane = new VirtualizedScrollPane<>(fileContentArea);
@@ -353,9 +354,11 @@ public class MainStageController implements Observable {
 
     private CodeArea performFileViewArea(Tab selectedTab) {
         final SplitPane currentPane = (SplitPane) selectedTab.getContent();
-        currentPane.getItems().remove(CODE_AREA_INDEX);
-        CodeArea codeArea = new CodeArea();
+        final CodeArea codeArea = new CodeArea();
+        final ContextMenu contextMenu = setupContextMenu(codeArea);
+        codeArea.setContextMenu(contextMenu);
         codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
+        currentPane.getItems().remove(CODE_AREA_INDEX);
         VirtualizedScrollPane<CodeArea> scrollPane = new VirtualizedScrollPane<>(codeArea);
         currentPane.getItems().add(scrollPane);
         currentPane.setDividerPositions(DIVIDER_POSITION);
@@ -442,6 +445,10 @@ public class MainStageController implements Observable {
                 if (tabsCount > 1) {
                     resultsTabPane.getTabs().remove(1, tabsCount);
                 }
+               largeFileModeCheckBox.setDisable(false);
+            } else {
+                largeFileModeCheckBox.setSelected(false);
+                largeFileModeCheckBox.setDisable(true);
             }
         });
 
@@ -485,9 +492,6 @@ public class MainStageController implements Observable {
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(AppConfig.ALL_OCCURENCES_WINDOW_FXML_PATH));
                     Parent root = fxmlLoader.load();
                     stage.setTitle(bundle.getString("title.foundOccurrences"));
-                    stage.setMinHeight(600);
-                    stage.setMinWidth(800);
-                    stage.setResizable(false);
                     stage.setScene(new Scene(root));
                     stage.initModality(Modality.NONE);
                     stage.show();
@@ -541,6 +545,34 @@ public class MainStageController implements Observable {
         exitPageReadingModeButton.setTooltip(new Tooltip(bundle.getString("tip.exitReadingMode")));
         searchTextButton.setTooltip(new Tooltip(bundle.getString("tip.findText")));
         showAllTextOccurrencesButton.setTooltip(new Tooltip(bundle.getString("tip.showAllOccurrences")));
+    }
+
+    private ContextMenu setupContextMenu(CodeArea codeArea) {
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem menuSelectAll = new MenuItem(bundle.getString("menu.selectAll"));
+        MenuItem menuCopy = new MenuItem(bundle.getString("menu.copy"));
+        MenuItem menuPaste = new MenuItem(bundle.getString("menu.paste"));
+
+        menuSelectAll.setOnAction(event -> codeArea.selectAll());
+
+        menuCopy.setOnAction(event -> {
+            final Clipboard clipboard = Clipboard.getSystemClipboard();
+            final ClipboardContent content = new ClipboardContent();
+            content.putString(codeArea.getSelectedText());
+            clipboard.setContent(content);
+        });
+
+        menuPaste.setOnAction(event -> {
+            final Clipboard clipboard = Clipboard.getSystemClipboard();
+            codeArea.insertText(codeArea.getCaretPosition(), clipboard.getString());
+        });
+
+
+        contextMenu.getItems().add(menuSelectAll);
+        contextMenu.getItems().add(menuCopy);
+        contextMenu.getItems().add(menuPaste);
+
+        return contextMenu;
     }
 
 }

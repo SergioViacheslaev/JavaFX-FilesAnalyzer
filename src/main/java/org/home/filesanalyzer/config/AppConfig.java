@@ -1,4 +1,4 @@
-package org.home.textfinder.config;
+package org.home.filesanalyzer.config;
 
 import javafx.scene.image.Image;
 import javafx.scene.text.Font;
@@ -29,8 +29,8 @@ public class AppConfig {
 
     public void initStageParams() {
         primaryStage.getIcons().add(new Image("static/images/logo.png"));
-        primaryStage.setMinWidth(800);
-        primaryStage.setMinHeight(600);
+        primaryStage.setMinWidth(600);
+        primaryStage.setMinHeight(400);
         primaryStage.setWidth(1280);
         primaryStage.setHeight(800);
         primaryStage.setTitle(bundle.getString("appTitle"));

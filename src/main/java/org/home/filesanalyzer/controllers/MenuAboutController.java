@@ -1,10 +1,10 @@
-package org.home.textfinder.controllers;
+package org.home.filesanalyzer.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import org.home.textfinder.config.AppConfig;
+import org.home.filesanalyzer.config.AppConfig;
 
 public class MenuAboutController {
 
