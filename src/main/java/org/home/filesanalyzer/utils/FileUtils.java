@@ -129,7 +129,7 @@ public class FileUtils {
     @SneakyThrows
     public static boolean checkFileContainsText(File file, String searchedText) {
         boolean isContentFound = false;
-        try (Scanner scanner = new Scanner(file)) {
+        try (Scanner scanner = new Scanner(new FileInputStream(file), StandardCharsets.UTF_8)) {
             while (scanner.hasNextLine() && !isContentFound) {
                 String contentLine = scanner.nextLine();
                 if (StringUtils.containsIgnoreCase(contentLine, searchedText)) {
@@ -143,7 +143,7 @@ public class FileUtils {
     @SneakyThrows
     public static String getAllTextOccurrences(File file, String searchedText) {
         StringBuilder sb = new StringBuilder();
-        try (Scanner scanner = new Scanner(file)) {
+        try (Scanner scanner = new Scanner(new FileInputStream(file), StandardCharsets.UTF_8)) {
             while (scanner.hasNextLine()) {
                 String contentLine = scanner.nextLine();
                 if (StringUtils.containsIgnoreCase(contentLine, searchedText)) {
