@@ -20,7 +20,7 @@ import java.util.ResourceBundle;
 /**
  * JavaFX App
  */
-public class LogAnalyzerApp extends Application implements Observer {
+public class FilesAnalyzerApp extends Application implements Observer {
     private AppConfig config;
     private AnchorPane currentRootContainer;
 
