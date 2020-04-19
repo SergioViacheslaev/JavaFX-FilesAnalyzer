@@ -190,6 +190,7 @@ public class MainStageController implements Observable {
 
     private void startSearchTask() {
         Runnable searchTask = () -> {
+            final List<String> accessDeniedFiles = new ArrayList<>();
             final Tab currentTab;
             final String tabTitle;
             TreeView<String> searchResultsView = new TreeView<>();
@@ -224,13 +225,17 @@ public class MainStageController implements Observable {
             }
 
             if (enableFileMaskRadioButton.isSelected() && !enableFileContentRadioButton.isSelected()) {
-                FileTreeUtils.buildFilesMaskedTree(rootItem, fileMaskTextField.getText());
+                FileTreeUtils.buildFilesMaskedTree(rootItem, fileMaskTextField.getText(), accessDeniedFiles);
             } else if (enableFileMaskRadioButton.isSelected() && enableFileContentRadioButton.isSelected()) {
-                FileTreeUtils.buildFilesMaskedContentTree(rootItem, fileMaskTextField.getText(), searchText);
+                FileTreeUtils.buildFilesMaskedContentTree(rootItem, fileMaskTextField.getText(), searchText, accessDeniedFiles);
             } else if (enableFileContentRadioButton.isSelected()) {
-                FileTreeUtils.buildFilesWithContentTree(rootItem, fileExtensionTextField.getText(), searchText);
+                FileTreeUtils.buildFilesWithContentTree(rootItem, fileExtensionTextField.getText(), searchText, accessDeniedFiles);
             } else {
-                FileTreeUtils.buildFilesWithExtensionsTree(rootItem, fileExtensionTextField.getText());
+                FileTreeUtils.buildFilesWithExtensionsTree(rootItem, fileExtensionTextField.getText(), accessDeniedFiles);
+            }
+
+            if (!accessDeniedFiles.isEmpty()) {
+                DialogWindows.showInformationAlert(String.format(bundle.getString("alert.accessDeniedFiles"), accessDeniedFiles));
             }
 
             if (oneTabModeCheckBox.isSelected() && resultsTabPane.getTabs().size() == 1) {
@@ -445,7 +450,7 @@ public class MainStageController implements Observable {
                 if (tabsCount > 1) {
                     resultsTabPane.getTabs().remove(1, tabsCount);
                 }
-               largeFileModeCheckBox.setDisable(false);
+                largeFileModeCheckBox.setDisable(false);
             } else {
                 largeFileModeCheckBox.setSelected(false);
                 largeFileModeCheckBox.setDisable(true);
