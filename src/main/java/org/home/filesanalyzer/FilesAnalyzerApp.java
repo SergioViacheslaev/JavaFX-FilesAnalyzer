@@ -51,8 +51,8 @@ public class FilesAnalyzerApp extends Application implements Observer {
      * Invokes when user changes language.
      * Loading new scene-node with updated language from bundles.
      *
-     * @param o
-     * @param arg
+     * @param o MainStageController
+     * @param arg user's locale.
      */
     @SneakyThrows
     @Override

@@ -17,6 +17,15 @@ import java.util.List;
  */
 public class FileTreeUtils {
 
+    /**
+     * Method check each directory recursively:
+     * if folder has files, the are add to current directory;
+     * if directory is empty or has no searched files, it will be removed {@link #removeEmptyTreeItem(TreeItem)}
+     *
+     * @param rootItem          root tree item (directory path)
+     * @param fileExtension     search only files with this extension
+     * @param accessDeniedFiles list of files that can't be accessed
+     */
     public static void buildFilesWithExtensionsTree(TreeItem<String> rootItem, String fileExtension, List<String> accessDeniedFiles) {
 
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(rootItem.getValue()))) {
@@ -40,7 +49,15 @@ public class FileTreeUtils {
         }
     }
 
-
+    /**
+     * Method check each directory recursively:
+     * if folder has files, the are add to current directory;
+     * if directory is empty or has no searched files, it will be removed {@link #removeEmptyTreeItem(TreeItem)}
+     *
+     * @param rootItem          root tree item (directory path)
+     * @param fileMask          search only files wich names contain fileMask string.
+     * @param accessDeniedFiles list of files that can't be accessed
+     */
     public static void buildFilesMaskedTree(TreeItem<String> rootItem, String fileMask, List<String> accessDeniedFiles) {
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(rootItem.getValue()))) {
             for (Path path : directoryStream) {
@@ -62,7 +79,13 @@ public class FileTreeUtils {
         }
     }
 
-
+    /**
+     * Method search file with specified content {@link FileUtils#checkFileContainsText(File, String)}}
+     *
+     * @param rootItem          root tree item (directory path)
+     * @param text              searched text in file
+     * @param accessDeniedFiles list of files that can't be accessed
+     */
     public static void buildFilesMaskedContentTree(TreeItem<String> rootItem, String fileMask, String text, List<String> accessDeniedFiles) {
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(rootItem.getValue()))) {
             for (Path path : directoryStream) {

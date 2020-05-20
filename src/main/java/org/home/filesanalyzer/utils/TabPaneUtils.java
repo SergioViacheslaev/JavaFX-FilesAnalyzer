@@ -4,7 +4,9 @@ import javafx.application.Platform;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 
-
+/**
+ *  Creates new Tab for {@link org.home.filesanalyzer.controllers.MainStageController} resultsTabPane
+ */
 public class TabPaneUtils {
     public static Tab addTab(TabPane tabPane) {
         Tab newTab;

@@ -43,7 +43,15 @@ import static org.home.filesanalyzer.utils.DialogWindows.showInformationAlert;
 public class MainStageController implements Observable {
     public static final double DIVIDER_POSITION = 0.24;
     public static final int CODE_AREA_INDEX = 1;
+
+    /**
+     * Map stores Tabs with results view and {@link SearchedTextData}
+     * If tab is closed, then will be automatically removed from this map.
+     * <p>
+     * {@link SearchedTextData} stores searched text and it's position in code area.
+     */
     private final WeakHashMap<Tab, SearchedTextData> tabsSearchTextMap = new WeakHashMap<>();
+
     private final DirectoryChooser directoryChooser = new DirectoryChooser();
     private final List<Observer> observers = new ArrayList<>();
     private AppConfig appConfig;
@@ -89,6 +97,12 @@ public class MainStageController implements Observable {
     private CheckBox largeFileModeCheckBox;
 
 
+    /**
+     * Init method has access to @FXML fields,
+     * runs after constructor.
+     * <p>
+     * Prepares result view and controls listeners.
+     */
     @FXML
     private void initialize() {
         bundle = StatusMessages.getBundle();
@@ -96,6 +110,7 @@ public class MainStageController implements Observable {
         performResultsView(new TreeView<>());
         setupControlsTips();
     }
+
 
     @Override
     public void addObserver(Observer observer) {
@@ -122,6 +137,11 @@ public class MainStageController implements Observable {
         notifyObservers(AppConfig.APP_LOCALE_RUSSIAN);
     }
 
+    public void setupStageListeners(Stage primaryStage) {
+        primaryStage.setOnCloseRequest((closeEvent) -> {
+            executorService.shutdownNow();
+        });
+    }
 
     @FXML
     private void handleFileMaskSetAction(ActionEvent event) {
@@ -181,13 +201,12 @@ public class MainStageController implements Observable {
         }
     }
 
-    public void setupStageListeners(Stage primaryStage) {
-        primaryStage.setOnCloseRequest((closeEvent) -> {
-            executorService.shutdownNow();
-        });
-    }
-
-
+    /**
+     * Every new search runs as a task of thread pool {@code executorService}
+     * Checks user's chosen search options and alerts if user made mistake.
+     * <p>
+     * If there were files {@code accessDeniedFiles} that can't be accessed during search, it will show them to user.
+     */
     private void startSearchTask() {
         Runnable searchTask = () -> {
             final List<String> accessDeniedFiles = new ArrayList<>();
@@ -261,7 +280,16 @@ public class MainStageController implements Observable {
 
     }
 
-
+    /**
+     * Every new search will generate new Tab with results view.
+     * <p>
+     * This provides GC work and clean unused objects,
+     * prevents memory leaks of {@link org.fxmisc.richtext.CodeArea}
+     *
+     * @param searchResultsView found files tree.
+     * @return new Tab with {@code splitPane}, containing:
+     * files results tree view and code Area for file content.
+     */
     private Tab performResultsView(TreeView<String> searchResultsView) {
         final CodeArea fileContentArea = new CodeArea();
         final ContextMenu contextMenu = setupContextMenu(fileContentArea);
@@ -297,6 +325,13 @@ public class MainStageController implements Observable {
         return newTab;
     }
 
+    /**
+     * Defines logic, when user choose file in result view to read it's content.
+     *
+     * @param selectedItem        the chosen file path from tree view.
+     * @param fileContentTextArea file content view area.
+     * @param bundle              to get message for current language.
+     */
     private void showSelectedFile(TreeItem<String> selectedItem, CodeArea
             fileContentTextArea, ResourceBundle bundle) {
         if (selectedItem != null) {
@@ -372,8 +407,9 @@ public class MainStageController implements Observable {
         return codeArea;
     }
 
-
     private void setupControlsListeners() {
+
+        //Moves caret to position of found text
         searchTextButton.setOnAction(event -> {
             String searchText = fileContentSearchTextField.getText();
             if (!searchText.isEmpty()) {
@@ -422,7 +458,7 @@ public class MainStageController implements Observable {
             enableFileMaskRadioButton.setDisable(false);
         });
 
-
+        //Enables only one Tab to work in "Large File Mode"
         largeFileModeCheckBox.setOnAction(event -> {
             final CheckBox largeFile = (CheckBox) event.getSource();
             if (largeFile.isSelected()) {
@@ -457,6 +493,7 @@ public class MainStageController implements Observable {
             }
         });
 
+        //Reads next page of file
         readForwardButton.setOnAction(event -> {
             final Tab selectedTab = resultsTabPane.getSelectionModel().getSelectedItem();
             tabsSearchTextMap.get(selectedTab).setPosition(0);
@@ -473,6 +510,7 @@ public class MainStageController implements Observable {
             }
         });
 
+        //Reads previous page of file
         readBackButton.setOnAction(event -> {
             final Tab selectedTab = resultsTabPane.getSelectionModel().getSelectedItem();
             tabsSearchTextMap.get(selectedTab).setPosition(0);
@@ -490,6 +528,12 @@ public class MainStageController implements Observable {
         });
         searchButton.setOnAction(event -> startSearchTask());
 
+        /** Shows all found text occurrences in new window.
+         *  <p>
+         *  Runs every search task in {@code executorService}
+         *
+         *  {@link #showAllTextOccurrencesTask(CodeArea, Stage)}
+         */
         showAllTextOccurrencesButton.setOnAction(event -> {
             if (currentFilePath != null) {
                 try {
