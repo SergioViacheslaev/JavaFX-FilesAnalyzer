@@ -1,18 +1,13 @@
 package org.home.filesanalyzer.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
 /**
  * Stores search meta-data for each Tab.
+ *
  * @author Sergei Viacheslaev
  */
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
 public class SearchedTextData {
     private String text;
     private Integer position;

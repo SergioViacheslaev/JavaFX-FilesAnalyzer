@@ -5,8 +5,6 @@ import javafx.scene.control.Alert;
 
 /**
  * Creates window alerts.
- *
- * author Sergei Viacheslaev
  */
 public class DialogWindows {
 

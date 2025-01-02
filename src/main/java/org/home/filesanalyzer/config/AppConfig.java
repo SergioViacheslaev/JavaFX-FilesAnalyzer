@@ -19,13 +19,14 @@ public class AppConfig {
     public static final Locale APP_LOCALE_RUSSIAN = new Locale("ru");
     public static final Locale APP_LOCALE_ENGLISH = new Locale("en");
     public static final String FOUND_TEXT_STYLE = "foundText";
+    @Getter
+    @Setter
     private static ResourceBundle bundle;
     private Stage primaryStage;
 
     public AppConfig(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
-
 
     public void initStageParams() {
         primaryStage.getIcons().add(new Image("static/images/logo.png"));
@@ -38,14 +39,5 @@ public class AppConfig {
         primaryStage.getScene().getStylesheets().add("/static/css/text-area.css");
         Font.loadFont(getClass().getResourceAsStream("/static/fonts/aver.ttf"), 16);
     }
-
-    public static void setBundle(ResourceBundle bundle) {
-        AppConfig.bundle = bundle;
-    }
-
-    public static ResourceBundle getBundle() {
-        return bundle;
-    }
-
 
 }

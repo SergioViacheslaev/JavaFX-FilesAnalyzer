@@ -7,7 +7,11 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.AccessDeniedException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -27,14 +31,12 @@ public class FileTreeUtils {
      * @param accessDeniedFiles list of files that can't be accessed
      */
     public static void buildFilesWithExtensionsTree(TreeItem<String> rootItem, String fileExtension, List<String> accessDeniedFiles) {
-
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(rootItem.getValue()))) {
             for (Path path : directoryStream) {
 
                 if (Files.isRegularFile(path) && (path.toString().endsWith(fileExtension))) {
                     rootItem.getChildren().add(new TreeItem<>(path.toString()));
                 }
-
 
                 if (Files.isDirectory(path)) {
                     TreeItem<String> directoryItem = addTreeItem(rootItem, path.toString(), new ImageView(Icons.DIRECTORY_EXPANDED.getImage()));
@@ -118,7 +120,6 @@ public class FileTreeUtils {
                     rootItem.getChildren().add(new TreeItem<>(path.toString()));
                 }
 
-
                 if (Files.isDirectory(path)) {
                     TreeItem<String> directoryItem = addTreeItem(rootItem, path.toString(), new ImageView(Icons.DIRECTORY_EXPANDED.getImage()));
                     buildFilesWithContentTree(directoryItem, fileExtension, text, accessDeniedFiles);
@@ -132,7 +133,6 @@ public class FileTreeUtils {
         }
     }
 
-
     private static TreeItem<String> addTreeItem(TreeItem<String> rootItem, String filePath, ImageView image) {
         TreeItem<String> addedItem = new TreeItem<>(filePath, image);
         addedItem.setExpanded(true);
@@ -140,13 +140,11 @@ public class FileTreeUtils {
         return addedItem;
     }
 
-
     private static void removeEmptyTreeItem(TreeItem<String> rootItem) {
         int lastTreeItemIndex = rootItem.getChildren().size() - 1;
         if (rootItem.getChildren().get(lastTreeItemIndex).getChildren().size() == 0) {
             rootItem.getChildren().remove(lastTreeItemIndex);
         }
     }
-
 
 }

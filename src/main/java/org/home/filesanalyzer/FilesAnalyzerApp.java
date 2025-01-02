@@ -26,7 +26,6 @@ public class FilesAnalyzerApp extends Application implements Observer {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(AppConfig.MAIN_STAGE_FXML_PATH));
         fxmlLoader.setResources(ResourceBundle.getBundle("bundles.locale", AppConfig.APP_LOCALE_RUSSIAN));
         AppConfig.setBundle(fxmlLoader.getResources());

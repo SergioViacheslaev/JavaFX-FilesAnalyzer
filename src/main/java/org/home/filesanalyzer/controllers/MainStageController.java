@@ -6,7 +6,18 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
@@ -32,7 +43,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.WeakHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -51,9 +67,9 @@ public class MainStageController implements Observable {
      * {@link SearchedTextData} stores searched text and it's position in code area.
      */
     private final WeakHashMap<Tab, SearchedTextData> tabsSearchTextMap = new WeakHashMap<>();
-
     private final DirectoryChooser directoryChooser = new DirectoryChooser();
     private final List<Observer> observers = new ArrayList<>();
+
     private AppConfig appConfig;
     private ResourceBundle bundle;
     private ExecutorService executorService = Executors.newFixedThreadPool(4);
@@ -96,7 +112,6 @@ public class MainStageController implements Observable {
     @FXML
     private CheckBox largeFileModeCheckBox;
 
-
     /**
      * Init method has access to @FXML fields,
      * runs after constructor.
@@ -111,15 +126,9 @@ public class MainStageController implements Observable {
         setupControlsTips();
     }
 
-
     @Override
     public void addObserver(Observer observer) {
         this.observers.add(observer);
-    }
-
-    @Override
-    public void removeObserver(Observer observer) {
-        this.observers.remove(observer);
     }
 
     @Override
@@ -172,7 +181,6 @@ public class MainStageController implements Observable {
 
     }
 
-
     @FXML
     private void handleSearchPathSetAction(MouseEvent event) {
         File searchPath = directoryChooser.showDialog(appConfig.getPrimaryStage());
@@ -181,7 +189,6 @@ public class MainStageController implements Observable {
             searchButton.setDisable(false);
         }
     }
-
 
     @FXML
     private void showMenuAbout(ActionEvent event) {
@@ -408,7 +415,6 @@ public class MainStageController implements Observable {
     }
 
     private void setupControlsListeners() {
-
         //Moves caret to position of found text
         searchTextButton.setOnAction(event -> {
             String searchText = fileContentSearchTextField.getText();
@@ -557,7 +563,6 @@ public class MainStageController implements Observable {
             }
         });
 
-
     }
 
     private void showAllTextOccurrencesTask(CodeArea foundTextArea, Stage stage) {
@@ -615,7 +620,6 @@ public class MainStageController implements Observable {
             final Clipboard clipboard = Clipboard.getSystemClipboard();
             codeArea.insertText(codeArea.getCaretPosition(), clipboard.getString());
         });
-
 
         contextMenu.getItems().add(menuSelectAll);
         contextMenu.getItems().add(menuCopy);
