@@ -33,6 +33,4 @@ public class StatusMessages {
     public static String getTabName() {
         return bundle.getString("tabName");
     }
-
-
 }

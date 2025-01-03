@@ -328,7 +328,6 @@ public class MainStageController implements Observable {
             }
         });
 
-
         return newTab;
     }
 
@@ -452,7 +451,6 @@ public class MainStageController implements Observable {
 
         });
 
-
         exitPageReadingModeButton.setOnAction(event -> {
             oneTabModeCheckBox.setDisable(false);
             largeFileModeCheckBox.setDisable(false);
@@ -533,13 +531,17 @@ public class MainStageController implements Observable {
             }
         });
         searchButton.setOnAction(event -> startSearchTask());
+        setShowAllTextOccurrencesButtonAction();
+    }
 
-        /** Shows all found text occurrences in new window.
-         *  <p>
-         *  Runs every search task in {@code executorService}
-         *
-         *  {@link #showAllTextOccurrencesTask(CodeArea, Stage)}
-         */
+    /**
+     * Shows all found text occurrences in new window.
+     * <p>
+     * Runs every search task in {@code executorService}
+     * <p>
+     * {@link #showAllTextOccurrencesTask(CodeArea, Stage)}
+     */
+    private void setShowAllTextOccurrencesButtonAction() {
         showAllTextOccurrencesButton.setOnAction(event -> {
             if (currentFilePath != null) {
                 try {
@@ -562,7 +564,6 @@ public class MainStageController implements Observable {
                 }
             }
         });
-
     }
 
     private void showAllTextOccurrencesTask(CodeArea foundTextArea, Stage stage) {

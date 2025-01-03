@@ -16,10 +16,6 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-
-/**
- * JavaFX App
- */
 public class FilesAnalyzerApp extends Application implements Observer {
     private AppConfig config;
     private AnchorPane currentRootContainer;
@@ -45,18 +41,17 @@ public class FilesAnalyzerApp extends Application implements Observer {
         primaryStage.show();
     }
 
-
     /**
      * Invokes when user changes language.
      * Loading new scene-node with updated language from bundles.
      *
-     * @param o MainStageController
+     * @param observable   MainStageController
      * @param arg user's locale.
      */
     @SneakyThrows
     @Override
-    public void update(Observable o, Object arg) {
-        ((MainStageController) o).getExecutorService().shutdownNow();
+    public void update(Observable observable, Object arg) {
+        ((MainStageController) observable).getExecutorService().shutdownNow();
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(AppConfig.MAIN_STAGE_FXML_PATH));
         fxmlLoader.setResources(ResourceBundle.getBundle("bundles.locale", (Locale) arg));

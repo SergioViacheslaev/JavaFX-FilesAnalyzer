@@ -10,7 +10,7 @@ import javafx.scene.control.TabPane;
 public class TabPaneUtils {
     public static Tab addTab(TabPane tabPane) {
         Tab newTab;
-        if (tabPane.getTabs().size() == 0) {
+        if (tabPane.getTabs().isEmpty()) {
             newTab = new Tab(String.format(StatusMessages.getTabName(), tabPane.getTabs().size() + 1));
             newTab.setClosable(false);
         } else if (tabPane.getTabs().size() == 4) {

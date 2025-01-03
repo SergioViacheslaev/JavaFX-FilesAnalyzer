@@ -43,9 +43,7 @@ public class TextOccurrencesMenuController {
         AnchorPane.setLeftAnchor(scrollPane, 0d);
         AnchorPane.setRightAnchor(scrollPane, 0d);
         pane.getChildren().add(scrollPane);
-
     }
-
 
     private ContextMenu setupContextMenu() {
         ContextMenu contextMenu = new ContextMenu();
@@ -67,13 +65,10 @@ public class TextOccurrencesMenuController {
             textOccurrencesArea.insertText(textOccurrencesArea.getCaretPosition(), clipboard.getString());
         });
 
-
         contextMenu.getItems().add(menuSelectAll);
         contextMenu.getItems().add(menuCopy);
         contextMenu.getItems().add(menuPaste);
 
         return contextMenu;
     }
-
-
 }

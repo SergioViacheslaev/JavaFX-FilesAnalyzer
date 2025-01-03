@@ -38,7 +38,6 @@ public class FileUtils {
         }
     }
 
-
     @SneakyThrows
     public static String getLargeFileContent(String filepath) {
         byte[] buffer = Files.readAllBytes(Paths.get(filepath));
@@ -47,7 +46,6 @@ public class FileUtils {
         }
         return "";
     }
-
 
     @SneakyThrows
     public static Map<Boolean, String> getPreviousPageContent(String filePath) {
@@ -125,7 +123,6 @@ public class FileUtils {
 
     }
 
-
     @SneakyThrows
     public static boolean checkFileContainsText(File file, String searchedText) {
         boolean isContentFound = false;
@@ -153,7 +150,6 @@ public class FileUtils {
         }
         return sb.toString().trim();
     }
-
 
     @SneakyThrows
     private static long countTotalFilePages(String filePath) {
