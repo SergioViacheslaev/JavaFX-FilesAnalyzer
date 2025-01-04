@@ -29,7 +29,7 @@ public class AppConfig {
     }
 
     public void initStageParams() {
-        primaryStage.getIcons().add(new Image("static/images/logo.png"));
+        primaryStage.getIcons().add(new Image("static/images/java_logo.png"));
         primaryStage.setMinWidth(600);
         primaryStage.setMinHeight(400);
         primaryStage.setWidth(1280);
