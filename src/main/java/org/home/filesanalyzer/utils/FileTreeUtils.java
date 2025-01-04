@@ -2,6 +2,7 @@ package org.home.filesanalyzer.utils;
 
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -19,6 +20,7 @@ import java.util.List;
  *
  * @author Sergei Viacheslaev
  */
+@Slf4j
 public class FileTreeUtils {
 
     /**
@@ -47,7 +49,7 @@ public class FileTreeUtils {
         } catch (FileNotFoundException | AccessDeniedException e) {
             accessDeniedFiles.add(rootItem.getValue());
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error building files with extensions tree", e);
         }
     }
 
@@ -77,7 +79,7 @@ public class FileTreeUtils {
         } catch (FileNotFoundException | AccessDeniedException e) {
             accessDeniedFiles.add(rootItem.getValue());
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error building files masked tree", e);
         }
     }
 
@@ -106,7 +108,7 @@ public class FileTreeUtils {
         } catch (FileNotFoundException | AccessDeniedException e) {
             accessDeniedFiles.add(rootItem.getValue());
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error building files masked content tree", e);
         }
     }
 
@@ -129,7 +131,7 @@ public class FileTreeUtils {
         } catch (FileNotFoundException | AccessDeniedException e) {
             accessDeniedFiles.add(rootItem.getValue());
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error building files with content tree", e);
         }
     }
 
@@ -142,7 +144,7 @@ public class FileTreeUtils {
 
     private static void removeEmptyTreeItem(TreeItem<String> rootItem) {
         int lastTreeItemIndex = rootItem.getChildren().size() - 1;
-        if (rootItem.getChildren().get(lastTreeItemIndex).getChildren().size() == 0) {
+        if (rootItem.getChildren().get(lastTreeItemIndex).getChildren().isEmpty()) {
             rootItem.getChildren().remove(lastTreeItemIndex);
         }
     }

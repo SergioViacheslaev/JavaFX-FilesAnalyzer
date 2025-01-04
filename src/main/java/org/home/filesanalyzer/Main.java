@@ -1,6 +1,7 @@
 package org.home.filesanalyzer;
 
 import javafx.application.Application;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Launcher for JAR.
@@ -13,6 +14,7 @@ import javafx.application.Application;
  *
  * @author Sergei Viacheslaev
  */
+@Slf4j
 public class Main {
     public static void main(String[] args) {
         Application.launch(FilesAnalyzerApp.class, args);

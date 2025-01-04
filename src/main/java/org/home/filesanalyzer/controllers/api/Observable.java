@@ -1,4 +1,4 @@
-package org.home.filesanalyzer.api;
+package org.home.filesanalyzer.controllers.api;
 
 public interface Observable {
 

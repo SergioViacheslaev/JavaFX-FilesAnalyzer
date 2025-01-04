@@ -6,6 +6,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import org.home.filesanalyzer.config.AppConfig;
 
+import java.nio.charset.Charset;
+
 public class MenuAboutController {
 
     @FXML
@@ -19,7 +21,7 @@ public class MenuAboutController {
         String java_version = System.getProperties().getProperty("java.version");
         String os_name = System.getProperties().getProperty("os.name");
         String os_version = System.getProperties().getProperty("os.version");
-        String encoding = System.getProperty("file.encoding");
+        String encoding = Charset.defaultCharset().displayName();
         String javafx_version = System.getProperty("javafx.version");
 
         system_info.setText(String.format("OS: %s %s%n%s%s%s%n%s",

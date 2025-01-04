@@ -1,17 +1,16 @@
 package org.home.filesanalyzer.utils;
 
 
+import lombok.Getter;
+
 import java.util.ResourceBundle;
 
 public class StatusMessages {
+    @Getter
     private static ResourceBundle bundle;
 
     public static void setBundle(ResourceBundle bundle) {
         StatusMessages.bundle = bundle;
-    }
-
-    public static ResourceBundle getBundle() {
-        return bundle;
     }
 
     public static String getFileSizeStatus(long fileSize) {

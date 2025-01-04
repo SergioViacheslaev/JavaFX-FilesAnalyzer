@@ -46,7 +46,7 @@ public class TextOccurrencesMenuController {
     }
 
     private ContextMenu setupContextMenu() {
-        ContextMenu contextMenu = new ContextMenu();
+        final ContextMenu contextMenu = new ContextMenu();
         MenuItem menuSelectAll = new MenuItem(bundle.getString("menu.selectAll"));
         MenuItem menuCopy = new MenuItem(bundle.getString("menu.copy"));
         MenuItem menuPaste = new MenuItem(bundle.getString("menu.paste"));

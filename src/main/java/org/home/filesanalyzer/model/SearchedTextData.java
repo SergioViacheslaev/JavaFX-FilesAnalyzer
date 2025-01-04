@@ -4,8 +4,6 @@ import lombok.Data;
 
 /**
  * Stores search meta-data for each Tab.
- *
- * @author Sergei Viacheslaev
  */
 @Data
 public class SearchedTextData {

@@ -29,17 +29,24 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
-import org.home.filesanalyzer.api.Observable;
-import org.home.filesanalyzer.api.Observer;
+import org.home.filesanalyzer.controllers.api.Observable;
+import org.home.filesanalyzer.controllers.api.Observer;
 import org.home.filesanalyzer.config.AppConfig;
 import org.home.filesanalyzer.model.SearchedTextData;
-import org.home.filesanalyzer.utils.*;
+import org.home.filesanalyzer.utils.DialogWindows;
+import org.home.filesanalyzer.utils.FileTreeUtils;
+import org.home.filesanalyzer.utils.FileUtils;
+import org.home.filesanalyzer.utils.Icons;
+import org.home.filesanalyzer.utils.StatusMessages;
+import org.home.filesanalyzer.utils.TabPaneUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -54,9 +61,11 @@ import java.util.concurrent.Executors;
 
 import static org.home.filesanalyzer.utils.DialogWindows.showInformationAlert;
 
+@Slf4j
 @Getter
 @Setter
 public class MainStageController implements Observable {
+
     public static final double DIVIDER_POSITION = 0.24;
     public static final int CODE_AREA_INDEX = 1;
 
@@ -178,7 +187,6 @@ public class MainStageController implements Observable {
             searchTextButton.setDisable(true);
             showAllTextOccurrencesButton.setDisable(true);
         }
-
     }
 
     @FXML
@@ -202,9 +210,8 @@ public class MainStageController implements Observable {
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
-
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error loading MenuAbout", e);
         }
     }
 
@@ -284,7 +291,6 @@ public class MainStageController implements Observable {
             }
         };
         executorService.execute(searchTask);
-
     }
 
     /**

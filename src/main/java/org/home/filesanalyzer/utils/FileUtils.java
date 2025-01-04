@@ -3,7 +3,11 @@ package org.home.filesanalyzer.utils;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -11,6 +15,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
  * Gets file content, pages, check files has searched text.
@@ -34,7 +40,7 @@ public class FileUtils {
         if (!contentStrings.isEmpty()) {
             return String.join("\n", contentStrings);
         } else {
-            return "";
+            return EMPTY;
         }
     }
 
@@ -44,7 +50,7 @@ public class FileUtils {
         if (buffer.length > 0) {
             return new String(buffer, StandardCharsets.UTF_8);
         }
-        return "";
+        return EMPTY;
     }
 
     @SneakyThrows
@@ -74,15 +80,12 @@ public class FileUtils {
         return Collections.emptyMap();
     }
 
-
     @SneakyThrows
     public static Map<Boolean, String> getNextPageContent(String filePath) {
         boolean hasNextPage = true;
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8))) {
             char[] buffer = new char[FILE_PAGE_LIMIT];
-
             previousPagePointer = nextPagePointer - lastPageSize;
-
             br.skip(nextPagePointer);
 
             int bytesRead = br.read(buffer);
@@ -99,12 +102,11 @@ public class FileUtils {
         }
 
         return Collections.emptyMap();
-
     }
 
     @SneakyThrows
     public static String getFirstPageContent(String filePath) {
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(Files.newInputStream(Paths.get(filePath)), StandardCharsets.UTF_8))) {
             char[] buffer = new char[FILE_PAGE_LIMIT];
 
             int bytesRead = br.read(buffer);
@@ -119,14 +121,13 @@ public class FileUtils {
             }
         }
 
-        return "";
-
+        return EMPTY;
     }
 
     @SneakyThrows
     public static boolean checkFileContainsText(File file, String searchedText) {
         boolean isContentFound = false;
-        try (Scanner scanner = new Scanner(new FileInputStream(file), "UTF-8")) {
+        try (Scanner scanner = new Scanner(Files.newInputStream(file.toPath()), "UTF-8")) {
             while (scanner.hasNextLine() && !isContentFound) {
                 String contentLine = scanner.nextLine();
                 if (StringUtils.containsIgnoreCase(contentLine, searchedText)) {
