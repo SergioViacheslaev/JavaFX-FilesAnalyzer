@@ -21,5 +21,8 @@ will show you all found text occurrences in new window.<br>
 ![nextFoundText](https://user-images.githubusercontent.com/49530516/79639752-4fac7080-8196-11ea-957c-2fd07ef98fcf.jpg)
 will move cursor to the first and next found text occurrence.<br>
 
+If you run from IDEA or -jar add VM options:
+--module-path C:\Java\javafx-sdk-14\lib --add-modules javafx.controls,javafx.fxml
+
 Supports English, Russian languages. <br>
 Powered by OpenJFX https://openjfx.io/, RichTextFx https://github.com/FXMisc/RichTextFX 
